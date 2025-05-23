@@ -6,10 +6,10 @@ set(SOURCES
 add_executable(benchmark ${SOURCES})
 
 # Link the libraries to the executable
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
+target_link_libraries(benchmark PRIVATE
   tree
 )
 
-target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
+target_include_directories(benchmark PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/internal/
 )
