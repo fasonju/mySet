@@ -261,4 +261,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+.cache
+build
+
 # End of https://www.toptal.com/developers/gitignore/api/clion,cmake,c++,linux,windows,macos,vim
