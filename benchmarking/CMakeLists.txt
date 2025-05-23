@@ -7,7 +7,7 @@ add_executable(benchmark ${SOURCES})
 
 # Link the libraries to the executable
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
-  avl-tree
+  tree
 )
 
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
