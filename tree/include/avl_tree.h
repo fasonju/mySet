@@ -1,26 +1,27 @@
 #pragma once
 
+#include <functional>
 #include <optional>
 #include <vector>
 
-template <typename Key, typename Value> class ITree {
+template <typename Value, typename Compare = std::less<Value>> class ITree {
 public:
   virtual ~ITree() = default;
 
-  // Insert a key-value pair into the tree
-  virtual void insert(const Key &key, const Value &value) = 0;
+  // Insert a value into the tree
+  virtual void insert(const Value &value) = 0;
 
-  // Remove a key from the tree
-  virtual bool remove(const Key &key) = 0;
+  // Remove a value from the tree
+  virtual bool remove(const Value &value) = 0;
 
-  // Search for a key and return the associated value (if found)
-  virtual std::optional<Value> search(const Key &key) const = 0;
+  // Search for a value in the tree
+  virtual std::optional<Value> search(const Value &value) const = 0;
 
-  // Check if the tree contains a specific key
-  virtual bool contains(const Key &key) const = 0;
+  // Check if the tree contains a specific value
+  virtual bool contains(const Value &value) const = 0;
 
-  // In-order traversal of keys
-  virtual std::vector<Key> keys_in_order() const = 0;
+  // In-order traversal of values
+  virtual std::vector<Value> values_in_order() const = 0;
 
   // Get the height of the tree
   virtual int height() const = 0;
@@ -33,4 +34,7 @@ public:
 
   // Check if the tree is empty
   virtual bool empty() const = 0;
+
+  // Get the comparator being used
+  virtual Compare comparator() const = 0;
 };
