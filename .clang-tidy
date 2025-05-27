@@ -1,0 +1,16 @@
+
+---
+Checks: "*,
+        -abseil-*,
+        -altera-*,
+        -android-*,
+        -boost-*,
+        -fuchsia-*,
+        -llvmlibc-*,
+        -modernize-use-trailing-return-type,
+        -objc-*,
+        -openmp-*,
+        -bugprone-easily-swappable-parameters
+"
+WarningsAsErrors: ''
+HeaderFilterRegex: ''

@@ -1,16 +1,16 @@
 #pragma once
 
-#include <concepts>
-#include <cstddef>
+#include "avl_tree.h"
+
 template <typename T>
     requires std::totally_ordered<T>
-class AVLTree {
+class PointerAVLTree : AVLTree<T> {
   public:
-    AVLTree(const AVLTree &) = delete;
-    AVLTree(AVLTree &&) = delete;
-    AVLTree &operator=(const AVLTree &) = delete;
-    AVLTree &operator=(AVLTree &&) = delete;
-    virtual ~AVLTree() = default;
+    PointerAVLTree(const PointerAVLTree &) = delete;
+    PointerAVLTree(PointerAVLTree &&) = delete;
+    PointerAVLTree &operator=(const PointerAVLTree &) = delete;
+    PointerAVLTree &operator=(PointerAVLTree &&) = delete;
+    virtual ~PointerAVLTree() = default;
 
     // Insert a value into the tree
     virtual void insert(const T &value) = 0;
