@@ -4,9 +4,9 @@
 #include <optional>
 #include <vector>
 
-template <typename Value, typename Compare = std::less<Value>> class ITree {
+template <typename Value, typename Compare = std::less<Value>> class AVLTree {
 public:
-  virtual ~ITree() = default;
+  virtual ~AVLTree() = default;
 
   // Insert a value into the tree
   virtual void insert(const Value &value) = 0;
