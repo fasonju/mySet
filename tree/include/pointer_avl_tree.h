@@ -59,6 +59,7 @@ class PointerAVLTree : AVLTree<T> {
         explicit Node(T &&value)
             : value(std::move(value)), left(nullptr), right(nullptr) {}
 
+        void fixImbalance(bool valueBigger);
         void left_rotate();
         void right_rotate();
     };

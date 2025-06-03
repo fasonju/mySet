@@ -10,40 +10,50 @@ bool PointerAVLTree<T>::insert(std::unique_ptr<Node> &node, T &&value) {
     if (!node) {
         this->head = std::make_unique<Node>(std::move(value));
     }
-    bool valueBigger = value > node->value;
-    bool valueSmaller = value < node->value;
 
-    if (valueSmaller) {
-        insert(node.left, std::move(value));
-    } else if (valueBigger) {
+    if (value == node->value) {
+        return false;
+    }
+
+    bool valueBigger = value > node->value;
+
+    if (valueBigger) {
         insert(node->right, std::move(value));
     } else {
-        return false;
+        insert(node.left, std::move(value));
     }
 
     // update height
     node->height = max(node->left->height, node->right->height) + 1;
 
-    int balance = node->left->height - node->right->height;
+    node->fixImbalance(valueBigger);
+
+    return true;
+}
+
+template <typename T>
+    requires std::totally_ordered<T>
+void PointerAVLTree<T>::Node::fixImbalance(bool valueBigger) {
+    int balance = this->left->height - this->right->height;
 
     // Left side
-    if (balance > 1 && valueSmaller) {
-        node->right_rotate();
+    if (balance > 1 && !valueBigger) {
+        this->right_rotate();
     }
 
     if (balance > 1 && valueBigger) {
-        node->left->left_rotate();
-        node->right_rotate();
+        this->left->left_rotate();
+        this->right_rotate();
     }
 
     // Right side
     if (balance < 1 && valueBigger) {
-        node->left_rotate();
+        this->left_rotate();
     }
 
-    if (balance < 1 && valueSmaller) {
-        node->right->right_rotate();
-        node->left_rotate();
+    if (balance < 1 && !valueBigger) {
+        this->right->right_rotate();
+        this->left_rotate();
     }
 }
 
