@@ -20,7 +20,7 @@ bool PointerAVLTree<T>::insert(std::unique_ptr<Node> &node, T &&value) {
     if (valueBigger) {
         insert(node->right, std::move(value));
     } else {
-        insert(node.left, std::move(value));
+        insert(node->left, std::move(value));
     }
 
     // update height
