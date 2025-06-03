@@ -13,7 +13,7 @@ class AVLTree {
     virtual ~AVLTree() = default;
 
     // Insert a value into the tree
-    virtual void insert(T value) = 0;
+    virtual void insert(T &&value) = 0;
 
     // Remove a value from the tree
     virtual bool remove(const T &value) = 0;
