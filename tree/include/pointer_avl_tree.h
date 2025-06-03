@@ -59,10 +59,11 @@ class PointerAVLTree : AVLTree<T> {
         explicit Node(T &&value)
             : value(std::move(value)), left(nullptr), right(nullptr) {}
 
-        int getBalanceFactor();
+        void left_rotate();
+        void right_rotate();
     };
 
     std::unique_ptr<Node> &head;
 
-    void insert(std::unique_ptr<Node> &node, T &&value);
+    bool insert(std::unique_ptr<Node> &node, T &&value);
 };
