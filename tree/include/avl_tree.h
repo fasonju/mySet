@@ -13,12 +13,10 @@ class AVLTree {
     virtual ~AVLTree() = default;
 
     // Insert a value into the tree
-    virtual void insert(T &&value) = 0;
+    virtual bool insert(T &&value) = 0;
 
     // Remove a value from the tree
     virtual bool remove(const T &value) = 0;
-
-    virtual bool removeAll(const T &value) = 0;
 
     /**
      * Search for a value in the tree

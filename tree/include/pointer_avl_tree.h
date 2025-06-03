@@ -1,6 +1,7 @@
 #pragma once
 
 #include "avl_tree.h"
+#include <memory>
 
 template <typename T>
     requires std::totally_ordered<T>
@@ -13,7 +14,7 @@ class PointerAVLTree : AVLTree<T> {
     ~PointerAVLTree() = default;
 
     // Insert a value into the tree
-    void insert(T value) override;
+    bool insert(T &&value) override;
 
     // Remove a value from the tree
     bool remove(const T &value) override;
@@ -51,10 +52,17 @@ class PointerAVLTree : AVLTree<T> {
   private:
     struct Node {
         T value;
-        Node *left;
-        Node *right;
-        int height;
+        int height{};
+        std::unique_ptr<Node> left;
+        std::unique_ptr<Node> right;
+
+        explicit Node(T &&value)
+            : value(std::move(value)), left(nullptr), right(nullptr) {}
+
+        int getBalanceFactor();
     };
 
-    Node head;
+    std::unique_ptr<Node> &head;
+
+    void insert(std::unique_ptr<Node> &node, T &&value);
 };

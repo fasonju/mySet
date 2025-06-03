@@ -10,7 +10,9 @@ Checks: "*,
         -modernize-use-trailing-return-type,
         -objc-*,
         -openmp-*,
-        -bugprone-easily-swappable-parameters
+        -bugprone-easily-swappable-parameters,
+        -misc-non-private-member-variables-in-classes
+
 "
 WarningsAsErrors: ''
 HeaderFilterRegex: ''
