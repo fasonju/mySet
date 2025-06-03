@@ -10,41 +10,51 @@ class PointerAVLTree : AVLTree<T> {
     PointerAVLTree(PointerAVLTree &&) = delete;
     PointerAVLTree &operator=(const PointerAVLTree &) = delete;
     PointerAVLTree &operator=(PointerAVLTree &&) = delete;
-    virtual ~PointerAVLTree() = default;
+    ~PointerAVLTree() = default;
 
     // Insert a value into the tree
-    virtual void insert(const T &value) = 0;
+    void insert(T value) override;
 
     // Remove a value from the tree
-    virtual bool remove(const T &value) = 0;
+    bool remove(const T &value) override;
 
-    virtual bool removeAll(const T &value) = 0;
+    bool removeAll(const T &value) override;
 
     /**
      * Search for a value in the tree
      *
      * returns nullptr if not found
      */
-    virtual T *search(const T &value) const = 0;
+    T *search(const T &value) const override;
 
     // Get max value
-    virtual T *max() const = 0;
+    T *max() const override;
 
     // Get min value
-    virtual T *min() const = 0;
+    T *min() const override;
 
     // Check if the tree contains a specific value
-    virtual bool contains(const T &value) const = 0;
+    bool contains(const T &value) const override;
 
     // Get the height of the tree
-    [[nodiscard]] virtual int height() const = 0;
+    [[nodiscard]] int height() const override;
 
     // Get the number of nodes
-    [[nodiscard]] virtual size_t size() const = 0;
+    [[nodiscard]] size_t size() const override;
 
     // Clear the entire tree
-    virtual void clear() = 0;
+    void clear() override;
 
     // Check if the tree is empty
-    [[nodiscard]] virtual bool empty() const = 0;
+    [[nodiscard]] bool empty() const override;
+
+  private:
+    struct Node {
+        T value;
+        Node *left;
+        Node *right;
+        int height;
+    };
+
+    Node head;
 };
