@@ -64,7 +64,8 @@ class PointerAVLTree : AVLTree<T> {
         void right_rotate();
     };
 
-    std::unique_ptr<Node> &head;
+    std::unique_ptr<Node> head;
 
     bool insert(std::unique_ptr<Node> &node, T &&value);
+    bool remove(std::unique_ptr<Node> &node, const T &value);
 };
