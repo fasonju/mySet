@@ -52,7 +52,7 @@ class PointerAVLTree : AVLTree<T> {
   private:
     struct Node {
         T value;
-        int height{};
+        int height = 1;
         std::unique_ptr<Node> left;
         std::unique_ptr<Node> right;
 
@@ -61,6 +61,11 @@ class PointerAVLTree : AVLTree<T> {
 
         void left_rotate();
         void right_rotate();
+        constexpr int getBalance() {
+            const int leftHeight = left ? left->height : 0;
+            const int rightHeight = right ? right->height : 0;
+            return leftHeight - rightHeight;
+        }
     };
 
     std::unique_ptr<Node> head;

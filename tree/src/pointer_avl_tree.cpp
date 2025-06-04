@@ -11,7 +11,7 @@ template <typename T>
     requires std::totally_ordered<T>
 bool PointerAVLTree<T>::insert(std::unique_ptr<Node> &node, T &&value) {
     if (!node) {
-        this->head = std::make_unique<Node>(std::move(value));
+        node = std::make_unique<Node>(std::move(value));
     }
 
     if (value == node->value) {
@@ -32,30 +32,30 @@ bool PointerAVLTree<T>::insert(std::unique_ptr<Node> &node, T &&value) {
     }
 
     // update height
-    const int leftHeight = node->left ? node->left->height : -1;
-    const int rightHeight = node->right ? node->right->height : -1;
+    const int leftHeight = node->left ? node->left->height : 0;
+    const int rightHeight = node->right ? node->right->height : 0;
     node->height = max(leftHeight, rightHeight) + 1;
 
-    int balance = this->left->height - this->right->height;
+    int balance = node->getBalance();
 
     // Left side
     if (balance > 1 && !valueBigger) {
-        this->right_rotate();
+        node->right_rotate();
     }
 
     if (balance > 1 && valueBigger) {
-        this->left->left_rotate();
-        this->right_rotate();
+        node->left->left_rotate();
+        node->right_rotate();
     }
 
     // Right side
     if (balance < 1 && valueBigger) {
-        this->left_rotate();
+        node->left_rotate();
     }
 
     if (balance < 1 && !valueBigger) {
-        this->right->right_rotate();
-        this->left_rotate();
+        node->right->right_rotate();
+        node->left_rotate();
     }
 
     return true;
@@ -88,21 +88,17 @@ bool PointerAVLTree<T>::remove(std::unique_ptr<Node> &node, const T &value) {
     const bool leftExists = node->left;
     const bool rightExists = node->right;
 
-    const int leftHeight = leftExists ? node->left->height : -1;
-    const int rightHeight = rightExists ? node->right->height : -1;
+    const int leftHeight = leftExists ? node->left->height : 0;
+    const int rightHeight = rightExists ? node->right->height : 0;
 
     // base cases
     if (!leftExists && !rightExists) {
         node = nullptr;
-        return true;
-    }
-    if (!leftExists) {
+    } else if (!leftExists) {
         node = std::move(node->right);
-        return true;
-    }
-    if (!rightExists) {
+    } else if (!rightExists) {
         node = std::move(node->right);
-        return true;
+    } else {
     }
 }
 
