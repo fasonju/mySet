@@ -93,6 +93,7 @@ bool PointerAVLTree<T>::remove(std::unique_ptr<Node> &node, const T &value) {
             node == nullptr;
             return true;
         }
+
         if (!node->left) {
             node = std::move(node->right);
         } else if (!node->right) {
