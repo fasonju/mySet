@@ -114,4 +114,12 @@ TEST(AvlTree, RightLeftInsertion) {
     EXPECT_TRUE(postRotationHeight == 3);
     EXPECT_TRUE(postRotationSize == 5);
 }
+
+TEST(AvlTree, EmptyRemove) {
+    auto tree = std::make_unique<PointerAVLTree<int>>();
+
+    const bool successful = tree->remove(1);
+
+    EXPECT_FALSE(successful);
+}
 // NOLINTEND
