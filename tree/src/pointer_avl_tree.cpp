@@ -87,9 +87,28 @@ bool PointerAVLTree<T>::remove(std::unique_ptr<Node> &node, const T &value) {
         if (!remove(node->left, value)) {
             return false;
         }
+    } else {
+        // removal logic
+        if (!node->left && !node->right) {
+            node == nullptr;
+            return true;
+        }
+        if (!node->left) {
+            node = std::move(node->right);
+        } else if (!node->right) {
+            node = std::move(node->left);
+        } else {
+
+            std::unique_ptr<Node> &inorderSuccessor =
+                node->getInorderSuccessor();
+            std::unique_ptr<Node> newNode =
+                std::make_unique<Node>(inorderSuccessor->value);
+            remove(node->right, inorderSuccessor->value);
+            node = std::move(newNode);
+        }
     }
 
-    // removal and rebalancing logic
+    // rebalancing and height update
     const bool leftExists = node->left;
     const bool rightExists = node->right;
 
@@ -101,11 +120,17 @@ bool PointerAVLTree<T>::remove(std::unique_ptr<Node> &node, const T &value) {
 
     if (balance > 1 && leftExists && node->left->getBalance() >= 0) {
         node->right_rotate();
-    }
-
-    if (balance < -1 && rightExists && node->right->getBalance <= 0) {
+    } else if (balance < -1 && rightExists && node->right->getBalance <= 0) {
+        node->left_rotate();
+    } else if (balance > 1 && leftExists && node->left->getBalance() < 0) {
+        node->left->left_rotate();
+        node->right_rotate();
+    } else if (balance < -1 && rightExists && node->right->getBalance > 0) {
+        node->right->right_rotate();
         node->left_rotate();
     }
+
+    return true;
 }
 
 template <typename T>
