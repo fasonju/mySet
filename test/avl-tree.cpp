@@ -150,14 +150,12 @@ TEST(AvlTree, StandardRemoval) {
 
     tree->insert(1);
     tree->insert(2);
-
     tree->remove(1);
 
     const int height = tree->height();
     const size_t size = tree->size();
     const int *value = tree->search(1);
-    std::cout << height << "\n";
-    std::cout << size << "\n";
+
     EXPECT_TRUE(height == 1);
     EXPECT_TRUE(size == 1);
     EXPECT_TRUE(value == nullptr);
