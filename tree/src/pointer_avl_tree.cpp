@@ -90,7 +90,7 @@ bool PointerAVLTree<T>::remove(std::unique_ptr<Node> &node, const T &value) {
     } else {
         // removal logic
         if (!node->left && !node->right) {
-            node == nullptr;
+            node = nullptr;
             return true;
         }
 
@@ -277,11 +277,25 @@ void PointerAVLTree<T>::leftRotate(std::unique_ptr<Node> &node) {
     // Make the old root the left child of newRoot
     newRoot->left = std::move(node);
 
-    std::swap(node, newRoot);
+    node = std::move(newRoot);
 }
 
 template <typename T>
     requires std::totally_ordered<T>
 void PointerAVLTree<T>::rightRotate(std::unique_ptr<Node> &node) {
-    LOG_ERROR("Unimplemented");
+    if (!node || !node->left) {
+        return;
+    }
+
+    // Take ownership of the left child
+    std::unique_ptr<Node> newRoot = std::move(node->left);
+
+    // Move the right subtree of newRoot into the left subtree of node
+    node->left = std::move(newRoot->right);
+
+    // Make the old root the right child of newRoot
+    newRoot->right = std::move(node);
+
+    // Update node to point to new root
+    node = std::move(newRoot);
 }
