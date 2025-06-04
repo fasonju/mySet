@@ -1,6 +1,5 @@
 set(SOURCES
   src/array_avl_tree.cpp
-  src/pointer_avl_tree.cpp
 )
 
 add_library(tree STATIC ${SOURCES})

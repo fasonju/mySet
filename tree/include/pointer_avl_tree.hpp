@@ -1,10 +1,14 @@
-#include "pointer_avl_tree.h"
+#pragma once
+
 #include "log.h"
+#include "pointer_avl_tree.h"
 #include <algorithm>
 #include <concepts>
 #include <cstddef>
 #include <cstdlib>
+#include <exception>
 #include <memory>
+#include <stdexcept>
 #include <utility>
 
 template <typename T>
@@ -16,20 +20,19 @@ bool PointerAVLTree<T>::insert(std::unique_ptr<Node> &node, T &&value) {
     }
 
     if (value == node->value) {
-        LOG_ERROR("Duplicate value");
-        return false;
+        throw std::invalid_argument("Duplicate key");
     }
 
     const bool valueBigger = value > node->value;
     bool treeGrew = false;
 
     if (valueBigger) {
-        const bool subtreeGrew = insert(node->right, std::forward(value));
+        const bool subtreeGrew = insert(node->right, std::forward<T>(value));
         treeGrew = subtreeGrew &&
                    ((node->left && node->left->height < node->right->height) ||
                     !node->left);
     } else {
-        const bool subtreeGrew = insert(node->left, std::forward(value));
+        const bool subtreeGrew = insert(node->left, std::forward<T>(value));
         treeGrew = subtreeGrew &&
                    ((node->right && node->right->height < node->left->height) ||
                     !node->right);
@@ -38,7 +41,8 @@ bool PointerAVLTree<T>::insert(std::unique_ptr<Node> &node, T &&value) {
     // update height
     const int leftHeight = node->left ? node->left->height : 0;
     const int rightHeight = node->right ? node->right->height : 0;
-    node->height = max(leftHeight, rightHeight) + treeGrew;
+    node->height =
+        std::max(leftHeight, rightHeight) + static_cast<int>(treeGrew);
 
     int balance = getBalance(node);
 
@@ -69,7 +73,13 @@ template <typename T>
     requires std::totally_ordered<T>
 // NOLINTNEXTLINE(cppcoreguidelines-rvalue-reference-param-not-moved)
 bool PointerAVLTree<T>::insert(T &&value) {
-    return insert(this->head, std::forward<T>(value));
+    try {
+        insert(this->head, std::forward<T>(value));
+        return true;
+    } catch (std::exception &exception) {
+        LOG_ERROR(exception.what());
+        return false;
+    }
 }
 
 template <typename T>
@@ -99,9 +109,10 @@ bool PointerAVLTree<T>::remove(std::unique_ptr<Node> &node, const T &value) {
         } else if (!node->right) {
             node = std::move(node->left);
         } else {
-            std::unique_ptr<Node> &inorderSuccessor = getInorderSuccessor(node);
+            std::unique_ptr<Node> &inorderSuccessor = getInOrderSuccessor(node);
+            auto successorValue = inorderSuccessor->value; // Copy
             std::unique_ptr<Node> newNode =
-                std::make_unique<Node>(inorderSuccessor->value);
+                std::make_unique<Node>(std::move(successorValue));
 
             remove(node->right, inorderSuccessor->value);
             node = std::move(newNode);
@@ -109,12 +120,12 @@ bool PointerAVLTree<T>::remove(std::unique_ptr<Node> &node, const T &value) {
     }
 
     // rebalancing and height update
-    const bool leftExists = node->left;
-    const bool rightExists = node->right;
+    const bool leftExists = node->left != nullptr;
+    const bool rightExists = node->right != nullptr;
 
     const int leftHeight = leftExists ? node->left->height : 0;
     const int rightHeight = rightExists ? node->right->height : 0;
-    node->height = max(leftHeight, rightHeight);
+    node->height = std::max(leftHeight, rightHeight);
 
     const int balance = getBalance(node);
 
@@ -176,7 +187,7 @@ T *PointerAVLTree<T>::max() const {
 template <typename T>
     requires std::totally_ordered<T>
 T *PointerAVLTree<T>::max(const std::unique_ptr<Node> &node) const {
-    return node->right ? max(node->right) : node->value;
+    return node->right ? max(node->right) : &node->value;
 }
 
 template <typename T>
@@ -192,7 +203,7 @@ T *PointerAVLTree<T>::min() const {
 template <typename T>
     requires std::totally_ordered<T>
 T *PointerAVLTree<T>::min(const std::unique_ptr<Node> &node) const {
-    return node->left ? max(node->left) : node->value;
+    return node->left ? max(node->left) : &node->value;
 }
 
 template <typename T>
@@ -298,4 +309,26 @@ void PointerAVLTree<T>::rightRotate(std::unique_ptr<Node> &node) {
 
     // Update node to point to new root
     node = std::move(newRoot);
+}
+
+/**
+ * Assumes right subtree exists
+ */
+template <typename T>
+    requires std::totally_ordered<T>
+std::unique_ptr<typename PointerAVLTree<T>::Node> &
+PointerAVLTree<T>::getInOrderSuccessor(
+    const std::unique_ptr<Node> &node) const {
+    if (!node || !node->right) {
+        LOG_ERROR("invalid argument");
+        throw std::invalid_argument(
+            "developer fault, inorderSuccessor must have right child");
+    }
+
+    auto *current = const_cast<std::unique_ptr<Node> *>(&node->right);
+    while ((*current)->left) {
+        current = &(*current)->left;
+    }
+
+    return *current;
 }
