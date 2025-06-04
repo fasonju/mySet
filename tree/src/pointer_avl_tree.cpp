@@ -12,6 +12,7 @@ template <typename T>
 bool PointerAVLTree<T>::insert(std::unique_ptr<Node> &node, T &&value) {
     if (!node) {
         node = std::make_unique<Node>(std::move(value));
+        return true;
     }
 
     if (value == node->value) {
@@ -20,21 +21,24 @@ bool PointerAVLTree<T>::insert(std::unique_ptr<Node> &node, T &&value) {
     }
 
     const bool valueBigger = value > node->value;
+    bool treeGrew = false;
 
     if (valueBigger) {
-        if (!insert(node->right, std::forward(value))) {
-            return false;
-        }
+        const bool subtreeGrew = insert(node->right, std::forward(value));
+        treeGrew = subtreeGrew &&
+                   ((node->left && node->left->height < node->right->height) ||
+                    !node->left);
     } else {
-        if (!insert(node->left, std::forward(value))) {
-            return false;
-        }
+        const bool subtreeGrew = insert(node->left, std::forward(value));
+        treeGrew = subtreeGrew &&
+                   ((node->right && node->right->height < node->left->height) ||
+                    !node->right);
     }
 
     // update height
     const int leftHeight = node->left ? node->left->height : 0;
     const int rightHeight = node->right ? node->right->height : 0;
-    node->height = max(leftHeight, rightHeight) + 1;
+    node->height = max(leftHeight, rightHeight) + treeGrew;
 
     int balance = node->getBalance();
 
@@ -49,16 +53,16 @@ bool PointerAVLTree<T>::insert(std::unique_ptr<Node> &node, T &&value) {
     }
 
     // Right side
-    if (balance < 1 && valueBigger) {
+    if (balance < -1 && valueBigger) {
         node->left_rotate();
     }
 
-    if (balance < 1 && !valueBigger) {
+    if (balance < -1 && !valueBigger) {
         node->right->right_rotate();
         node->left_rotate();
     }
 
-    return true;
+    return treeGrew;
 }
 
 template <typename T>
@@ -91,15 +95,16 @@ bool PointerAVLTree<T>::remove(std::unique_ptr<Node> &node, const T &value) {
 
     const int leftHeight = leftExists ? node->left->height : 0;
     const int rightHeight = rightExists ? node->right->height : 0;
+    node->height = max(leftHeight, rightHeight);
 
-    // base cases
-    if (!leftExists && !rightExists) {
-        node = nullptr;
-    } else if (!leftExists) {
-        node = std::move(node->right);
-    } else if (!rightExists) {
-        node = std::move(node->right);
-    } else {
+    const int balance = node->getBalance();
+
+    if (balance > 1 && leftExists && node->left->getBalance() >= 0) {
+        node->right_rotate();
+    }
+
+    if (balance < -1 && rightExists && node->right->getBalance <= 0) {
+        node->left_rotate();
     }
 }
 

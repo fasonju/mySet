@@ -66,6 +66,7 @@ class PointerAVLTree : AVLTree<T> {
             const int rightHeight = right ? right->height : 0;
             return leftHeight - rightHeight;
         }
+        std::unique_ptr<Node> &getInorderSuccessor();
     };
 
     std::unique_ptr<Node> head;
