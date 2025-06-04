@@ -19,8 +19,6 @@ class PointerAVLTree : AVLTree<T> {
     // Remove a value from the tree
     bool remove(const T &value) override;
 
-    bool removeAll(const T &value) override;
-
     /**
      * Search for a value in the tree
      *
@@ -73,4 +71,5 @@ class PointerAVLTree : AVLTree<T> {
 
     bool insert(std::unique_ptr<Node> &node, T &&value);
     bool remove(std::unique_ptr<Node> &node, const T &value);
+    T *search(const std::unique_ptr<Node> &Node, const T &value) const;
 };

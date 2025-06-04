@@ -139,3 +139,31 @@ template <typename T>
 bool PointerAVLTree<T>::remove(const T &value) {
     return remove(this->head, value);
 }
+
+template <typename T>
+    requires std::totally_ordered<T>
+T *PointerAVLTree<T>::search(const T &value) const {
+    if (!this->head) {
+        return nullptr;
+    }
+
+    return search(this->head, value);
+}
+
+template <typename T>
+    requires std::totally_ordered<T>
+T *PointerAVLTree<T>::search(const std::unique_ptr<Node> &node,
+                             const T &value) const {
+    if (node == nullptr) {
+        return nullptr;
+    }
+
+    if (node->value == value) {
+        return &(node->value);
+    }
+
+    if (value < node->value) {
+        return search(node->left, value);
+    }
+    return search(node->right, value);
+}
