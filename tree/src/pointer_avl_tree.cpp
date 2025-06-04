@@ -99,11 +99,11 @@ bool PointerAVLTree<T>::remove(std::unique_ptr<Node> &node, const T &value) {
         } else if (!node->right) {
             node = std::move(node->left);
         } else {
-
             std::unique_ptr<Node> &inorderSuccessor =
                 node->getInorderSuccessor();
             std::unique_ptr<Node> newNode =
                 std::make_unique<Node>(inorderSuccessor->value);
+
             remove(node->right, inorderSuccessor->value);
             node = std::move(newNode);
         }
