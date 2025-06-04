@@ -6,7 +6,7 @@ template <typename T>
     requires std::totally_ordered<T>
 class AVLTree {
   public:
-    AVLTree<T>() = default;
+    AVLTree() = default;
     AVLTree(const AVLTree &) = delete;
     AVLTree(AVLTree &&) = delete;
     AVLTree &operator=(const AVLTree &) = delete;

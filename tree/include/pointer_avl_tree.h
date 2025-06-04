@@ -7,7 +7,7 @@ template <typename T>
     requires std::totally_ordered<T>
 class PointerAVLTree : AVLTree<T> {
   public:
-    PointerAVLTree<T>() : head(nullptr){};
+    PointerAVLTree() : head(nullptr) {};
     PointerAVLTree(const PointerAVLTree &) = delete;
     PointerAVLTree(PointerAVLTree &&) = delete;
     PointerAVLTree &operator=(const PointerAVLTree &) = delete;
