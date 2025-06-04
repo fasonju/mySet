@@ -163,3 +163,19 @@ T *PointerAVLTree<T>::search(const std::unique_ptr<Node> &node,
     }
     return search(node->right, value);
 }
+
+template <typename T>
+    requires std::totally_ordered<T>
+T *PointerAVLTree<T>::max() const {
+    if (!this->head) {
+        return nullptr;
+    }
+
+    return max(this->head);
+}
+
+template <typename T>
+    requires std::totally_ordered<T>
+T *PointerAVLTree<T>::max(const std::unique_ptr<Node> &node) const {
+    return node->right ? max(node->right) : node->value;
+}

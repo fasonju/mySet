@@ -72,4 +72,5 @@ class PointerAVLTree : AVLTree<T> {
     bool insert(std::unique_ptr<Node> &node, T &&value);
     bool remove(std::unique_ptr<Node> &node, const T &value);
     T *search(const std::unique_ptr<Node> &Node, const T &value) const;
+    T *max(const std::unique_ptr<Node> &node) const;
 };
