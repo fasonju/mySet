@@ -230,7 +230,17 @@ int PointerAVLTree<T>::height() const {
 template <typename T>
     requires std::totally_ordered<T>
 size_t PointerAVLTree<T>::size() const {
-    return this->head ? this->head->height : 0;
+    return size(this->head);
+}
+
+template <typename T>
+    requires std::totally_ordered<T>
+size_t PointerAVLTree<T>::size(const std::unique_ptr<Node> &node) const {
+    if (!node) {
+        return 0;
+    }
+
+    return size(node->left) + size(node->right) + 1;
 }
 
 template <typename T>
