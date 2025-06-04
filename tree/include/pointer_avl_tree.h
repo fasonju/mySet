@@ -7,7 +7,7 @@ template <typename T>
     requires std::totally_ordered<T>
 class PointerAVLTree : AVLTree<T> {
   public:
-    PointerAVLTree<T>() = default;
+    PointerAVLTree<T>() : head(nullptr){};
     PointerAVLTree(const PointerAVLTree &) = delete;
     PointerAVLTree(PointerAVLTree &&) = delete;
     PointerAVLTree &operator=(const PointerAVLTree &) = delete;
@@ -69,10 +69,10 @@ class PointerAVLTree : AVLTree<T> {
     bool contains(const std::unique_ptr<Node> &node, const T &value) const;
     size_t size(const std::unique_ptr<Node> &node) const;
     std::unique_ptr<Node> &
-    getInorderSuccessor(const std::unique_ptr<Node> &node) const;
+    getInOrderSuccessor(const std::unique_ptr<Node> &node) const;
     int getBalance(const std::unique_ptr<Node> &node) const;
     void leftRotate(std::unique_ptr<Node> &node);  // TODO(jasonfu): implement
-    void rightRotate(std::unique_ptr<Node> &Node); // TODO(jasonfu): implement
+    void rightRotate(std::unique_ptr<Node> &node); // TODO(jasonfu): implement
 };
 
-#include "pointer_avl_tree.tpp"
+#include "pointer_avl_tree.hpp"
