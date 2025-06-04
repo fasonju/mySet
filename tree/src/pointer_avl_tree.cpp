@@ -44,22 +44,22 @@ bool PointerAVLTree<T>::insert(std::unique_ptr<Node> &node, T &&value) {
 
     // Left side
     if (balance > 1 && !valueBigger) {
-        right_rotate(node);
+        rightRotate(node);
     }
 
     if (balance > 1 && valueBigger) {
-        left_rotate(node->left);
-        right_rotate(node);
+        leftRotate(node->left);
+        rightRotate(node);
     }
 
     // Right side
     if (balance < -1 && valueBigger) {
-        left_rotate(node);
+        leftRotate(node);
     }
 
     if (balance < -1 && !valueBigger) {
-        right_rotate(node->right);
-        left_rotate(node);
+        rightRotate(node->right);
+        leftRotate(node);
     }
 
     return treeGrew;
@@ -119,15 +119,15 @@ bool PointerAVLTree<T>::remove(std::unique_ptr<Node> &node, const T &value) {
     const int balance = getBalance(node);
 
     if (balance > 1 && leftExists && getBalance(node->left) >= 0) {
-        right_rotate(node);
+        rightRotate(node);
     } else if (balance < -1 && rightExists && getBalance(node->right) <= 0) {
-        left_rotate(node);
+        leftRotate(node);
     } else if (balance > 1 && leftExists && getBalance(node->left) < 0) {
-        left_rotate(node->left);
-        right_rotate(node);
+        leftRotate(node->left);
+        rightRotate(node);
     } else if (balance < -1 && rightExists && getBalance(node->right) > 0) {
-        right_rotate(node->right);
-        left_rotate(node);
+        rightRotate(node->right);
+        leftRotate(node);
     }
 
     return true;
@@ -260,4 +260,28 @@ int PointerAVLTree<T>::getBalance(const std::unique_ptr<Node> &node) const {
     const int leftHeight = node->left ? node->left->height : 0;
     const int rightHeight = node->right ? node->right->height : 0;
     return leftHeight - rightHeight;
+}
+
+template <typename T>
+    requires std::totally_ordered<T>
+void PointerAVLTree<T>::leftRotate(std::unique_ptr<Node> &node) {
+    if (!node || !node->right) {
+        return;
+    }
+
+    std::unique_ptr<Node> newRoot = std::move(node->right);
+
+    // Move the left subtree of newRoot into the right subtree of root
+    node->right = std::move(newRoot->left);
+
+    // Make the old root the left child of newRoot
+    newRoot->left = std::move(node);
+
+    std::swap(node, newRoot);
+}
+
+template <typename T>
+    requires std::totally_ordered<T>
+void PointerAVLTree<T>::rightRotate(std::unique_ptr<Node> &node) {
+    LOG_ERROR("Unimplemented");
 }

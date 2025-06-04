@@ -70,6 +70,6 @@ class PointerAVLTree : AVLTree<T> {
     std::unique_ptr<Node> &
     getInorderSuccessor(const std::unique_ptr<Node> &node) const;
     int getBalance(const std::unique_ptr<Node> &node) const;
-    void left_rotate(std::unique_ptr<Node> &node);  // TODO(jasonfu): implement
-    void right_rotate(std::unique_ptr<Node> &Node); // TODO(jasonfu): implement
+    void leftRotate(std::unique_ptr<Node> &node);  // TODO(jasonfu): implement
+    void rightRotate(std::unique_ptr<Node> &Node); // TODO(jasonfu): implement
 };
