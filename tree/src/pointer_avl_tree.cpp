@@ -179,3 +179,19 @@ template <typename T>
 T *PointerAVLTree<T>::max(const std::unique_ptr<Node> &node) const {
     return node->right ? max(node->right) : node->value;
 }
+
+template <typename T>
+    requires std::totally_ordered<T>
+T *PointerAVLTree<T>::min() const {
+    if (!this->head) {
+        return nullptr;
+    }
+
+    return min(this->head);
+}
+
+template <typename T>
+    requires std::totally_ordered<T>
+T *PointerAVLTree<T>::min(const std::unique_ptr<Node> &node) const {
+    return node->left ? max(node->left) : node->value;
+}
