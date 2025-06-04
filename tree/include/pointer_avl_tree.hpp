@@ -321,7 +321,8 @@ PointerAVLTree<T>::getInOrderSuccessor(
     const std::unique_ptr<Node> &node) const {
     if (!node || !node->right) {
         LOG_ERROR("invalid argument");
-        std::exit(1);
+        throw std::invalid_argument(
+            "developer fault, inorderSuccessor must have right child");
     }
 
     auto *current = const_cast<std::unique_ptr<Node> *>(&node->right);
