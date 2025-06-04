@@ -143,10 +143,6 @@ bool PointerAVLTree<T>::remove(const T &value) {
 template <typename T>
     requires std::totally_ordered<T>
 T *PointerAVLTree<T>::search(const T &value) const {
-    if (!this->head) {
-        return nullptr;
-    }
-
     return search(this->head, value);
 }
 
