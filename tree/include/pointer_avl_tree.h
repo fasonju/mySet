@@ -56,15 +56,6 @@ class PointerAVLTree : AVLTree<T> {
 
         explicit Node(T &&value)
             : value(std::move(value)), left(nullptr), right(nullptr) {}
-
-        void left_rotate();
-        void right_rotate();
-        constexpr int getBalance() {
-            const int leftHeight = left ? left->height : 0;
-            const int rightHeight = right ? right->height : 0;
-            return leftHeight - rightHeight;
-        }
-        std::unique_ptr<Node> &getInorderSuccessor();
     };
 
     std::unique_ptr<Node> head;
@@ -76,4 +67,9 @@ class PointerAVLTree : AVLTree<T> {
     T *min(const std::unique_ptr<Node> &node) const;
     bool contains(const std::unique_ptr<Node> &node, const T &value) const;
     size_t size(const std::unique_ptr<Node> &node) const;
+    std::unique_ptr<Node> &
+    getInorderSuccessor(const std::unique_ptr<Node> &node) const;
+    int getBalance(const std::unique_ptr<Node> &node) const;
+    void left_rotate(std::unique_ptr<Node> &node);  // TODO(jasonfu): implement
+    void right_rotate(std::unique_ptr<Node> &Node); // TODO(jasonfu): implement
 };

@@ -40,26 +40,26 @@ bool PointerAVLTree<T>::insert(std::unique_ptr<Node> &node, T &&value) {
     const int rightHeight = node->right ? node->right->height : 0;
     node->height = max(leftHeight, rightHeight) + treeGrew;
 
-    int balance = node->getBalance();
+    int balance = getBalance(node);
 
     // Left side
     if (balance > 1 && !valueBigger) {
-        node->right_rotate();
+        right_rotate(node);
     }
 
     if (balance > 1 && valueBigger) {
-        node->left->left_rotate();
-        node->right_rotate();
+        left_rotate(node->left);
+        right_rotate(node);
     }
 
     // Right side
     if (balance < -1 && valueBigger) {
-        node->left_rotate();
+        left_rotate(node);
     }
 
     if (balance < -1 && !valueBigger) {
-        node->right->right_rotate();
-        node->left_rotate();
+        right_rotate(node->right);
+        left_rotate(node);
     }
 
     return treeGrew;
@@ -99,8 +99,7 @@ bool PointerAVLTree<T>::remove(std::unique_ptr<Node> &node, const T &value) {
         } else if (!node->right) {
             node = std::move(node->left);
         } else {
-            std::unique_ptr<Node> &inorderSuccessor =
-                node->getInorderSuccessor();
+            std::unique_ptr<Node> &inorderSuccessor = getInorderSuccessor(node);
             std::unique_ptr<Node> newNode =
                 std::make_unique<Node>(inorderSuccessor->value);
 
@@ -117,18 +116,18 @@ bool PointerAVLTree<T>::remove(std::unique_ptr<Node> &node, const T &value) {
     const int rightHeight = rightExists ? node->right->height : 0;
     node->height = max(leftHeight, rightHeight);
 
-    const int balance = node->getBalance();
+    const int balance = getBalance(node);
 
-    if (balance > 1 && leftExists && node->left->getBalance() >= 0) {
-        node->right_rotate();
-    } else if (balance < -1 && rightExists && node->right->getBalance <= 0) {
-        node->left_rotate();
-    } else if (balance > 1 && leftExists && node->left->getBalance() < 0) {
-        node->left->left_rotate();
-        node->right_rotate();
-    } else if (balance < -1 && rightExists && node->right->getBalance > 0) {
-        node->right->right_rotate();
-        node->left_rotate();
+    if (balance > 1 && leftExists && getBalance(node->left) >= 0) {
+        right_rotate(node);
+    } else if (balance < -1 && rightExists && getBalance(node->right) <= 0) {
+        left_rotate(node);
+    } else if (balance > 1 && leftExists && getBalance(node->left) < 0) {
+        left_rotate(node->left);
+        right_rotate(node);
+    } else if (balance < -1 && rightExists && getBalance(node->right) > 0) {
+        right_rotate(node->right);
+        left_rotate(node);
     }
 
     return true;
@@ -253,4 +252,12 @@ template <typename T>
     requires std::totally_ordered<T>
 bool PointerAVLTree<T>::empty() const {
     return !this->head;
+}
+
+template <typename T>
+    requires std::totally_ordered<T>
+int PointerAVLTree<T>::getBalance(const std::unique_ptr<Node> &node) const {
+    const int leftHeight = node->left ? node->left->height : 0;
+    const int rightHeight = node->right ? node->right->height : 0;
+    return leftHeight - rightHeight;
 }
