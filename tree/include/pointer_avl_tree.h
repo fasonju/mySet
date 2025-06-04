@@ -75,4 +75,5 @@ class PointerAVLTree : AVLTree<T> {
     T *max(const std::unique_ptr<Node> &node) const;
     T *min(const std::unique_ptr<Node> &node) const;
     bool contains(const std::unique_ptr<Node> &node, const T &value) const;
+    size_t size(const std::unique_ptr<Node> &node) const;
 };

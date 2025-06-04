@@ -220,3 +220,27 @@ bool PointerAVLTree<T>::contains(const std::unique_ptr<Node> &node,
 
     return contains(node->right, value);
 }
+
+template <typename T>
+    requires std::totally_ordered<T>
+int PointerAVLTree<T>::height() const {
+    return this->head ? this->head->height : 0;
+}
+
+template <typename T>
+    requires std::totally_ordered<T>
+size_t PointerAVLTree<T>::size() const {
+    return this->head ? this->head->height : 0;
+}
+
+template <typename T>
+    requires std::totally_ordered<T>
+void PointerAVLTree<T>::clear() {
+    this->head = nullptr;
+}
+
+template <typename T>
+    requires std::totally_ordered<T>
+bool PointerAVLTree<T>::empty() const {
+    return !this->head;
+}
