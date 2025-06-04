@@ -195,3 +195,28 @@ template <typename T>
 T *PointerAVLTree<T>::min(const std::unique_ptr<Node> &node) const {
     return node->left ? max(node->left) : node->value;
 }
+
+template <typename T>
+    requires std::totally_ordered<T>
+bool PointerAVLTree<T>::contains(const T &value) const {
+    return contains(this->head, value);
+}
+
+template <typename T>
+    requires std::totally_ordered<T>
+bool PointerAVLTree<T>::contains(const std::unique_ptr<Node> &node,
+                                 const T &value) const {
+    if (!node) {
+        return false;
+    }
+
+    if (value == node->value) {
+        return true;
+    }
+
+    if (value < node->value) {
+        return contains(node->left, value);
+    }
+
+    return contains(node->right, value);
+}
