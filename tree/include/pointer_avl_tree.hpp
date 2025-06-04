@@ -125,7 +125,7 @@ bool PointerAVLTree<T>::remove(std::unique_ptr<Node> &node, const T &value) {
 
     const int leftHeight = leftExists ? node->left->height : 0;
     const int rightHeight = rightExists ? node->right->height : 0;
-    node->height = std::max(leftHeight, rightHeight);
+    node->height = std::max(leftHeight, rightHeight) + 1;
 
     const int balance = getBalance(node);
 

@@ -115,11 +115,51 @@ TEST(AvlTree, RightLeftInsertion) {
     EXPECT_TRUE(postRotationSize == 5);
 }
 
-TEST(AvlTree, EmptyRemove) {
+TEST(AvlTree, EmptyRemoval) {
     auto tree = std::make_unique<PointerAVLTree<int>>();
 
     const bool successful = tree->remove(1);
 
     EXPECT_FALSE(successful);
+}
+
+TEST(AvlTree, NonExistitantRemoval) {
+    auto tree = std::make_unique<PointerAVLTree<int>>();
+
+    tree->insert(1);
+    const bool successful = tree->remove(2);
+
+    EXPECT_FALSE(successful);
+}
+
+TEST(AvlTree, OnlyNodeRemoval) {
+    auto tree = std::make_unique<PointerAVLTree<int>>();
+
+    tree->insert(1);
+    const bool successful = tree->remove(1);
+    const int height = tree->height();
+    const size_t size = tree->size();
+
+    EXPECT_TRUE(successful);
+    EXPECT_TRUE(height == 0);
+    EXPECT_TRUE(size == 0);
+}
+
+TEST(AvlTree, StandardRemoval) {
+    auto tree = std::make_unique<PointerAVLTree<int>>();
+
+    tree->insert(1);
+    tree->insert(2);
+
+    tree->remove(1);
+
+    const int height = tree->height();
+    const size_t size = tree->size();
+    const int *value = tree->search(1);
+    std::cout << height << "\n";
+    std::cout << size << "\n";
+    EXPECT_TRUE(height == 1);
+    EXPECT_TRUE(size == 1);
+    EXPECT_TRUE(value == nullptr);
 }
 // NOLINTEND
