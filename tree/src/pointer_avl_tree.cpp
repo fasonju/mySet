@@ -22,11 +22,11 @@ bool PointerAVLTree<T>::insert(std::unique_ptr<Node> &node, T &&value) {
     const bool valueBigger = value > node->value;
 
     if (valueBigger) {
-        if (!insert(node->right, std::move(value))) {
+        if (!insert(node->right, std::forward(value))) {
             return false;
         }
     } else {
-        if (!insert(node->left, std::move(value))) {
+        if (!insert(node->left, std::forward(value))) {
             return false;
         }
     }
@@ -63,8 +63,9 @@ bool PointerAVLTree<T>::insert(std::unique_ptr<Node> &node, T &&value) {
 
 template <typename T>
     requires std::totally_ordered<T>
+// NOLINTNEXTLINE(cppcoreguidelines-rvalue-reference-param-not-moved)
 bool PointerAVLTree<T>::insert(T &&value) {
-    return insert(this->head, std::move(value));
+    return insert(this->head, std::forward<T>(value));
 }
 
 template <typename T>
