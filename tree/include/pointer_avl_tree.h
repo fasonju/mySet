@@ -7,6 +7,7 @@ template <typename T>
     requires std::totally_ordered<T>
 class PointerAVLTree : AVLTree<T> {
   public:
+    PointerAVLTree<T>() = default;
     PointerAVLTree(const PointerAVLTree &) = delete;
     PointerAVLTree(PointerAVLTree &&) = delete;
     PointerAVLTree &operator=(const PointerAVLTree &) = delete;
@@ -73,3 +74,5 @@ class PointerAVLTree : AVLTree<T> {
     void leftRotate(std::unique_ptr<Node> &node);  // TODO(jasonfu): implement
     void rightRotate(std::unique_ptr<Node> &Node); // TODO(jasonfu): implement
 };
+
+#include "pointer_avl_tree.tpp"
