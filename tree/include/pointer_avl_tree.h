@@ -3,7 +3,7 @@
 #include "container.h"
 #include <memory>
 
-template <typename T> class PointerAVLTree {
+template <typename T, typename Compare = std::less<T>> class PointerAVLTree {
   public:
     PointerAVLTree() : head(nullptr) {};
     PointerAVLTree(const PointerAVLTree &) = delete;
