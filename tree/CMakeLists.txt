@@ -1,5 +1,6 @@
 set(SOURCES
   src/array_avl_tree.cpp
+        include/skiplist.h
 )
 
 add_library(tree STATIC ${SOURCES})
