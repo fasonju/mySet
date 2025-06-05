@@ -21,10 +21,10 @@ bool PointerAVLTree<T, Compare>::insert(std::unique_ptr<Node> &node,
         return false;
     }
 
-    const bool valueBigger = value > node->value;
+    const bool valueBigger = comp(node->value, value);
     const bool subTreeRight =
-        (valueBigger && node->right && value > node->right->value) ||
-        (!valueBigger && node->left && value > node->left->value);
+        (valueBigger && node->right && comp(node->right->value, value) ||
+         (!valueBigger && node->left && comp(node->left->value, value)));
 
     if (valueBigger) {
         if (!insert(node->right, std::forward<T>(value))) {
@@ -76,11 +76,11 @@ bool PointerAVLTree<T, Compare>::remove(std::unique_ptr<Node> &node,
         return false;
     }
 
-    if (value > node->value) {
+    if (comp(node->value, value)) {
         if (!remove(node->right, value)) {
             return false;
         }
-    } else if (value < node->value) {
+    } else if (comp(value, node->value)) {
         if (!remove(node->left, value)) {
             return false;
         }
@@ -146,11 +146,11 @@ T *PointerAVLTree<T, Compare>::search(const std::unique_ptr<Node> &node,
         return nullptr;
     }
 
-    if (node->value == value) {
+    if (!comp(node->value, value) && !comp(value, node->value)) {
         return &(node->value);
     }
 
-    if (value < node->value) {
+    if (comp(value, node->value)) {
         return search(node->left, value);
     }
     return search(node->right, value);
@@ -196,11 +196,11 @@ bool PointerAVLTree<T, Compare>::contains(const std::unique_ptr<Node> &node,
         return false;
     }
 
-    if (value == node->value) {
+    if (!comp(node->value, value) && !comp(value, node->value)) {
         return true;
     }
 
-    if (value < node->value) {
+    if (comp(value, node->value)) {
         return contains(node->left, value);
     }
 

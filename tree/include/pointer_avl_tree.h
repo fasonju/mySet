@@ -1,6 +1,7 @@
 #pragma once
 
 #include "container.h"
+#include <__compare/compare_three_way.h>
 #include <memory>
 
 template <typename T, typename Compare = std::less<T>> class PointerAVLTree {
@@ -74,6 +75,7 @@ template <typename T, typename Compare = std::less<T>> class PointerAVLTree {
     void leftRotate(std::unique_ptr<Node> &node);
     void rightRotate(std::unique_ptr<Node> &node);
     void updateHeight(std::unique_ptr<Node> &node);
+    Compare comp;
 };
 
 template <typename T> class PointerAVLTreeIterator {};
