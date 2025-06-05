@@ -6,7 +6,6 @@
 #include <concepts>
 #include <cstddef>
 #include <cstdlib>
-#include <exception>
 #include <memory>
 #include <stdexcept>
 #include <utility>
@@ -20,66 +19,57 @@ bool PointerAVLTree<T>::insert(std::unique_ptr<Node> &node, T &&value) {
     }
 
     if (value == node->value) {
-        throw std::invalid_argument("Duplicate key");
+        return false;
     }
 
     const bool valueBigger = value > node->value;
-    bool treeGrew = false;
+    const bool subTreeRight =
+        (valueBigger && node->right && value > node->right->value) ||
+        (!valueBigger && node->left && value > node->left->value);
 
     if (valueBigger) {
-        const bool subtreeGrew = insert(node->right, std::forward<T>(value));
-        treeGrew = subtreeGrew &&
-                   ((node->left && node->left->height < node->right->height) ||
-                    !node->left);
+        if (!insert(node->right, std::forward<T>(value))) {
+            return false;
+        };
     } else {
-        const bool subtreeGrew = insert(node->left, std::forward<T>(value));
-        treeGrew = subtreeGrew &&
-                   ((node->right && node->right->height < node->left->height) ||
-                    !node->right);
+        if (!insert(node->left, std::forward<T>(value))) {
+            return false;
+        };
     }
 
     // update height
-    const int leftHeight = node->left ? node->left->height : 0;
-    const int rightHeight = node->right ? node->right->height : 0;
-    node->height =
-        std::max(leftHeight, rightHeight) + static_cast<int>(treeGrew);
+    updateHeight(node);
 
     int balance = getBalance(node);
 
     // Left side
-    if (balance > 1 && !valueBigger) {
+    if (balance > 1 && !subTreeRight) {
         rightRotate(node);
     }
 
-    if (balance > 1 && valueBigger) {
+    if (balance > 1 && subTreeRight) {
         leftRotate(node->left);
         rightRotate(node);
     }
 
     // Right side
-    if (balance < -1 && valueBigger) {
+    if (balance < -1 && subTreeRight) {
         leftRotate(node);
     }
 
-    if (balance < -1 && !valueBigger) {
+    if (balance < -1 && !subTreeRight) {
         rightRotate(node->right);
         leftRotate(node);
     }
 
-    return treeGrew;
+    return true;
 }
 
 template <typename T>
     requires std::totally_ordered<T>
 // NOLINTNEXTLINE(cppcoreguidelines-rvalue-reference-param-not-moved)
 bool PointerAVLTree<T>::insert(T &&value) {
-    try {
-        insert(this->head, std::forward<T>(value));
-        return true;
-    } catch (std::exception &exception) {
-        LOG_ERROR(exception.what());
-        return false;
-    }
+    return insert(this->head, std::forward<T>(value));
 }
 
 template <typename T>
@@ -123,9 +113,7 @@ bool PointerAVLTree<T>::remove(std::unique_ptr<Node> &node, const T &value) {
     const bool leftExists = node->left != nullptr;
     const bool rightExists = node->right != nullptr;
 
-    const int leftHeight = leftExists ? node->left->height : 0;
-    const int rightHeight = rightExists ? node->right->height : 0;
-    node->height = std::max(leftHeight, rightHeight);
+    updateHeight(node);
 
     const int balance = getBalance(node);
 
@@ -281,14 +269,13 @@ void PointerAVLTree<T>::leftRotate(std::unique_ptr<Node> &node) {
     }
 
     std::unique_ptr<Node> newRoot = std::move(node->right);
-
     // Move the left subtree of newRoot into the right subtree of root
     node->right = std::move(newRoot->left);
-
     // Make the old root the left child of newRoot
     newRoot->left = std::move(node);
-
     node = std::move(newRoot);
+    updateHeight(node->left);
+    updateHeight(node);
 }
 
 template <typename T>
@@ -300,15 +287,14 @@ void PointerAVLTree<T>::rightRotate(std::unique_ptr<Node> &node) {
 
     // Take ownership of the left child
     std::unique_ptr<Node> newRoot = std::move(node->left);
-
     // Move the right subtree of newRoot into the left subtree of node
     node->left = std::move(newRoot->right);
-
     // Make the old root the right child of newRoot
     newRoot->right = std::move(node);
-
     // Update node to point to new root
     node = std::move(newRoot);
+    updateHeight(node->right);
+    updateHeight(node);
 }
 
 /**
@@ -331,4 +317,15 @@ PointerAVLTree<T>::getInOrderSuccessor(
     }
 
     return *current;
+}
+
+template <typename T>
+    requires std::totally_ordered<T>
+void PointerAVLTree<T>::updateHeight(std::unique_ptr<Node> &node) {
+    const bool leftExists = node->left != nullptr;
+    const bool rightExists = node->right != nullptr;
+
+    const int leftHeight = leftExists ? node->left->height : 0;
+    const int rightHeight = rightExists ? node->right->height : 0;
+    node->height = std::max(leftHeight, rightHeight) + 1;
 }
