@@ -9,7 +9,9 @@ template <typename T>
     requires std::totally_ordered<T>
 class SkipList : AVLTree<T> {
     public:
+        //this one even necessary?
         SkipList(int maxLevel = 20); //completely arbitrary value, log(1,000,000) =~ 20
+
         ~SkipList() override;
 
         bool insert(T&& value) override;
