@@ -1,6 +1,7 @@
 #pragma once
 
 #include "tree.h"
+#include <iostream>
 #include <memory>
 
 template <typename T>
@@ -57,6 +58,21 @@ class PointerAVLTree : AVLTree<T> {
 
         explicit Node(T &&value)
             : value(std::move(value)), left(nullptr), right(nullptr) {}
+
+        void printTree(int indent = 0) const {
+            if (right) {
+                right->printTree(indent + 4);
+            }
+
+            if (indent != 0) {
+                std::cout << std::string(indent, ' ');
+            }
+            std::cout << value << " " << height << "\n";
+
+            if (left) {
+                left->printTree(indent + 4);
+            }
+        }
     };
 
     std::unique_ptr<Node> head;
@@ -71,8 +87,9 @@ class PointerAVLTree : AVLTree<T> {
     std::unique_ptr<Node> &
     getInOrderSuccessor(const std::unique_ptr<Node> &node) const;
     int getBalance(const std::unique_ptr<Node> &node) const;
-    void leftRotate(std::unique_ptr<Node> &node);  // TODO(jasonfu): implement
-    void rightRotate(std::unique_ptr<Node> &node); // TODO(jasonfu): implement
+    void leftRotate(std::unique_ptr<Node> &node);
+    void rightRotate(std::unique_ptr<Node> &node);
+    void updateHeight(std::unique_ptr<Node> &node);
 };
 
 #include "pointer_avl_tree.hpp"

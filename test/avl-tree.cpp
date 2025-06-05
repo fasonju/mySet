@@ -145,7 +145,7 @@ TEST(AvlTree, OnlyNodeRemoval) {
     EXPECT_TRUE(size == 0);
 }
 
-TEST(AvlTree, StandardRemoval) {
+TEST(AvlTree, RootRemoval) {
     auto tree = std::make_unique<PointerAVLTree<int>>();
 
     tree->insert(1);
@@ -159,5 +159,20 @@ TEST(AvlTree, StandardRemoval) {
     EXPECT_TRUE(height == 1);
     EXPECT_TRUE(size == 1);
     EXPECT_TRUE(value == nullptr);
+}
+
+TEST(AvlTree, MiddleRemoval) {
+    auto tree = std::make_unique<PointerAVLTree<int>>();
+
+    tree->insert(1);
+    tree->insert(2);
+    tree->insert(3);
+    tree->insert(4);
+    tree->remove(3);
+
+    const int height = tree->height();
+    const size_t size = tree->size();
+    EXPECT_TRUE(height == 2);
+    EXPECT_TRUE(size == 3);
 }
 // NOLINTEND
