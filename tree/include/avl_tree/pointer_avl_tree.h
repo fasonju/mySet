@@ -4,14 +4,14 @@
 #include <__compare/compare_three_way.h>
 #include <memory>
 
-template <typename T, typename Compare = std::less<T>> class PointerAVLTree {
+template <typename T, typename Compare = std::less<T>> class AVLTree {
   public:
-    PointerAVLTree() : head(nullptr) {};
-    PointerAVLTree(const PointerAVLTree &) = delete;
-    PointerAVLTree(PointerAVLTree &&) = delete;
-    PointerAVLTree &operator=(const PointerAVLTree &) = delete;
-    PointerAVLTree &operator=(PointerAVLTree &&) = delete;
-    ~PointerAVLTree() = default;
+    AVLTree() : head(nullptr) {};
+    AVLTree(const AVLTree &) = delete;
+    AVLTree(AVLTree &&) = delete;
+    AVLTree &operator=(const AVLTree &) = delete;
+    AVLTree &operator=(AVLTree &&) = delete;
+    ~AVLTree() = default;
 
     // Insert a value into the tree
     bool insert(T value);
@@ -78,8 +78,7 @@ template <typename T, typename Compare = std::less<T>> class PointerAVLTree {
     Compare comp;
 };
 
-template <typename T> class PointerAVLTreeIterator {};
-
 #include "pointer_avl_tree.hpp"
 
-static_assert(Dontainer<PointerAVLTree<int>, int>);
+static_assert(Dontainer<AVLTree<int>, int>);
+// static_assert(std::ranges::range<AVLTree<int>>);

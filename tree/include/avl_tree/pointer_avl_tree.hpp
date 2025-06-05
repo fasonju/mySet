@@ -1,7 +1,7 @@
 #pragma once
 
+#include "avl_tree/pointer_avl_tree.h"
 #include "log.h"
-#include "pointer_avl_tree.h"
 #include <algorithm>
 #include <cstddef>
 #include <cstdlib>
@@ -10,8 +10,7 @@
 #include <utility>
 
 template <typename T, typename Compare>
-bool PointerAVLTree<T, Compare>::insert(std::unique_ptr<Node> &node,
-                                        T &&value) {
+bool AVLTree<T, Compare>::insert(std::unique_ptr<Node> &node, T &&value) {
     if (!node) {
         node = std::make_unique<Node>(std::move(value));
         return true;
@@ -65,13 +64,12 @@ bool PointerAVLTree<T, Compare>::insert(std::unique_ptr<Node> &node,
 }
 
 template <typename T, typename Compare>
-bool PointerAVLTree<T, Compare>::insert(T value) {
+bool AVLTree<T, Compare>::insert(T value) {
     return insert(this->head, std::forward<T>(value));
 }
 
 template <typename T, typename Compare>
-bool PointerAVLTree<T, Compare>::remove(std::unique_ptr<Node> &node,
-                                        const T &value) {
+bool AVLTree<T, Compare>::remove(std::unique_ptr<Node> &node, const T &value) {
     if (!node) {
         return false;
     }
@@ -130,18 +128,18 @@ bool PointerAVLTree<T, Compare>::remove(std::unique_ptr<Node> &node,
 }
 
 template <typename T, typename Compare>
-bool PointerAVLTree<T, Compare>::remove(const T &value) {
+bool AVLTree<T, Compare>::remove(const T &value) {
     return remove(this->head, value);
 }
 
 template <typename T, typename Compare>
-T *PointerAVLTree<T, Compare>::search(const T &value) const {
+T *AVLTree<T, Compare>::search(const T &value) const {
     return search(this->head, value);
 }
 
 template <typename T, typename Compare>
-T *PointerAVLTree<T, Compare>::search(const std::unique_ptr<Node> &node,
-                                      const T &value) const {
+T *AVLTree<T, Compare>::search(const std::unique_ptr<Node> &node,
+                               const T &value) const {
     if (node == nullptr) {
         return nullptr;
     }
@@ -156,8 +154,7 @@ T *PointerAVLTree<T, Compare>::search(const std::unique_ptr<Node> &node,
     return search(node->right, value);
 }
 
-template <typename T, typename Compare>
-T *PointerAVLTree<T, Compare>::max() const {
+template <typename T, typename Compare> T *AVLTree<T, Compare>::max() const {
     if (!this->head) {
         return nullptr;
     }
@@ -166,12 +163,11 @@ T *PointerAVLTree<T, Compare>::max() const {
 }
 
 template <typename T, typename Compare>
-T *PointerAVLTree<T, Compare>::max(const std::unique_ptr<Node> &node) const {
+T *AVLTree<T, Compare>::max(const std::unique_ptr<Node> &node) const {
     return node->right ? max(node->right) : &node->value;
 }
 
-template <typename T, typename Compare>
-T *PointerAVLTree<T, Compare>::min() const {
+template <typename T, typename Compare> T *AVLTree<T, Compare>::min() const {
     if (!this->head) {
         return nullptr;
     }
@@ -180,18 +176,18 @@ T *PointerAVLTree<T, Compare>::min() const {
 }
 
 template <typename T, typename Compare>
-T *PointerAVLTree<T, Compare>::min(const std::unique_ptr<Node> &node) const {
+T *AVLTree<T, Compare>::min(const std::unique_ptr<Node> &node) const {
     return node->left ? max(node->left) : &node->value;
 }
 
 template <typename T, typename Compare>
-bool PointerAVLTree<T, Compare>::contains(const T &value) const {
+bool AVLTree<T, Compare>::contains(const T &value) const {
     return contains(this->head, value);
 }
 
 template <typename T, typename Compare>
-bool PointerAVLTree<T, Compare>::contains(const std::unique_ptr<Node> &node,
-                                          const T &value) const {
+bool AVLTree<T, Compare>::contains(const std::unique_ptr<Node> &node,
+                                   const T &value) const {
     if (!node) {
         return false;
     }
@@ -208,18 +204,17 @@ bool PointerAVLTree<T, Compare>::contains(const std::unique_ptr<Node> &node,
 }
 
 template <typename T, typename Compare>
-int PointerAVLTree<T, Compare>::height() const {
+int AVLTree<T, Compare>::height() const {
     return this->head ? this->head->height : 0;
 }
 
 template <typename T, typename Compare>
-size_t PointerAVLTree<T, Compare>::size() const {
+size_t AVLTree<T, Compare>::size() const {
     return size(this->head);
 }
 
 template <typename T, typename Compare>
-size_t
-PointerAVLTree<T, Compare>::size(const std::unique_ptr<Node> &node) const {
+size_t AVLTree<T, Compare>::size(const std::unique_ptr<Node> &node) const {
     if (!node) {
         return 0;
     }
@@ -227,26 +222,24 @@ PointerAVLTree<T, Compare>::size(const std::unique_ptr<Node> &node) const {
     return size(node->left) + size(node->right) + 1;
 }
 
-template <typename T, typename Compare>
-void PointerAVLTree<T, Compare>::clear() {
+template <typename T, typename Compare> void AVLTree<T, Compare>::clear() {
     this->head = nullptr;
 }
 
 template <typename T, typename Compare>
-bool PointerAVLTree<T, Compare>::empty() const {
+bool AVLTree<T, Compare>::empty() const {
     return !this->head;
 }
 
 template <typename T, typename Compare>
-int PointerAVLTree<T, Compare>::getBalance(
-    const std::unique_ptr<Node> &node) const {
+int AVLTree<T, Compare>::getBalance(const std::unique_ptr<Node> &node) const {
     const int leftHeight = node->left ? node->left->height : 0;
     const int rightHeight = node->right ? node->right->height : 0;
     return leftHeight - rightHeight;
 }
 
 template <typename T, typename Compare>
-void PointerAVLTree<T, Compare>::leftRotate(std::unique_ptr<Node> &node) {
+void AVLTree<T, Compare>::leftRotate(std::unique_ptr<Node> &node) {
     if (!node || !node->right) {
         return;
     }
@@ -262,7 +255,7 @@ void PointerAVLTree<T, Compare>::leftRotate(std::unique_ptr<Node> &node) {
 }
 
 template <typename T, typename Compare>
-void PointerAVLTree<T, Compare>::rightRotate(std::unique_ptr<Node> &node) {
+void AVLTree<T, Compare>::rightRotate(std::unique_ptr<Node> &node) {
     if (!node || !node->left) {
         return;
     }
@@ -283,8 +276,8 @@ void PointerAVLTree<T, Compare>::rightRotate(std::unique_ptr<Node> &node) {
  * Assumes right subtree exists
  */
 template <typename T, typename Compare>
-std::unique_ptr<typename PointerAVLTree<T, Compare>::Node> &
-PointerAVLTree<T, Compare>::getInOrderSuccessor(
+std::unique_ptr<typename AVLTree<T, Compare>::Node> &
+AVLTree<T, Compare>::getInOrderSuccessor(
     const std::unique_ptr<Node> &node) const {
     if (!node || !node->right) {
         LOG_ERROR("invalid argument");
@@ -301,7 +294,7 @@ PointerAVLTree<T, Compare>::getInOrderSuccessor(
 }
 
 template <typename T, typename Compare>
-void PointerAVLTree<T, Compare>::updateHeight(std::unique_ptr<Node> &node) {
+void AVLTree<T, Compare>::updateHeight(std::unique_ptr<Node> &node) {
     const bool leftExists = node->left != nullptr;
     const bool rightExists = node->right != nullptr;
 

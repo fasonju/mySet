@@ -1,11 +1,10 @@
 // NOLINTBEGIN
-#include "pointer_avl_tree.h"
+#include "avl_tree/pointer_avl_tree.h"
 #include <cstddef>
 #include <gtest/gtest.h>
-#include <memory>
 
 TEST(AvlTree, Initalization) {
-    auto tree = std::make_unique<PointerAVLTree<int>>();
+    auto tree = std::make_unique<AVLTree<int>>();
 
     EXPECT_TRUE(tree->height() == 0);
     EXPECT_TRUE(tree->empty());
@@ -15,7 +14,7 @@ TEST(AvlTree, Initalization) {
 }
 
 TEST(AvlTree, SimpleInsertion) {
-    auto tree = std::make_unique<PointerAVLTree<int>>();
+    auto tree = std::make_unique<AVLTree<int>>();
 
     const bool succeeded = tree->insert(1);
     const int *value = tree->search(1);
@@ -25,7 +24,7 @@ TEST(AvlTree, SimpleInsertion) {
 }
 
 TEST(AvlTree, DuplicateKeyInsertion) {
-    auto tree = std::make_unique<PointerAVLTree<int>>();
+    auto tree = std::make_unique<AVLTree<int>>();
 
     tree->insert(1);
     const bool succeeded = tree->insert(1);
@@ -40,7 +39,7 @@ TEST(AvlTree, DuplicateKeyInsertion) {
 }
 
 TEST(AvlTree, LeftLeftInsertion) {
-    auto tree = std::make_unique<PointerAVLTree<int>>();
+    auto tree = std::make_unique<AVLTree<int>>();
 
     tree->insert(4);
     tree->insert(5);
@@ -59,7 +58,7 @@ TEST(AvlTree, LeftLeftInsertion) {
 }
 
 TEST(AvlTree, RightRightInsertion) {
-    auto tree = std::make_unique<PointerAVLTree<int>>();
+    auto tree = std::make_unique<AVLTree<int>>();
 
     tree->insert(2);
     tree->insert(1);
@@ -78,7 +77,7 @@ TEST(AvlTree, RightRightInsertion) {
 }
 
 TEST(AvlTree, LeftRightInsertion) {
-    auto tree = std::make_unique<PointerAVLTree<int>>();
+    auto tree = std::make_unique<AVLTree<int>>();
 
     tree->insert(6);
     tree->insert(7);
@@ -97,7 +96,7 @@ TEST(AvlTree, LeftRightInsertion) {
 }
 
 TEST(AvlTree, RightLeftInsertion) {
-    auto tree = std::make_unique<PointerAVLTree<int>>();
+    auto tree = std::make_unique<AVLTree<int>>();
 
     tree->insert(2);
     tree->insert(1);
@@ -116,7 +115,7 @@ TEST(AvlTree, RightLeftInsertion) {
 }
 
 TEST(AvlTree, EmptyRemoval) {
-    auto tree = std::make_unique<PointerAVLTree<int>>();
+    auto tree = std::make_unique<AVLTree<int>>();
 
     const bool successful = tree->remove(1);
 
@@ -124,7 +123,7 @@ TEST(AvlTree, EmptyRemoval) {
 }
 
 TEST(AvlTree, NonExistitantRemoval) {
-    auto tree = std::make_unique<PointerAVLTree<int>>();
+    auto tree = std::make_unique<AVLTree<int>>();
 
     tree->insert(1);
     const bool successful = tree->remove(2);
@@ -133,7 +132,7 @@ TEST(AvlTree, NonExistitantRemoval) {
 }
 
 TEST(AvlTree, OnlyNodeRemoval) {
-    auto tree = std::make_unique<PointerAVLTree<int>>();
+    auto tree = std::make_unique<AVLTree<int>>();
 
     tree->insert(1);
     const bool successful = tree->remove(1);
@@ -146,7 +145,7 @@ TEST(AvlTree, OnlyNodeRemoval) {
 }
 
 TEST(AvlTree, RootRemoval) {
-    auto tree = std::make_unique<PointerAVLTree<int>>();
+    auto tree = std::make_unique<AVLTree<int>>();
 
     tree->insert(1);
     tree->insert(2);
@@ -162,7 +161,7 @@ TEST(AvlTree, RootRemoval) {
 }
 
 TEST(AvlTree, MiddleRemoval) {
-    auto tree = std::make_unique<PointerAVLTree<int>>();
+    auto tree = std::make_unique<AVLTree<int>>();
 
     tree->insert(1);
     tree->insert(2);
@@ -174,5 +173,12 @@ TEST(AvlTree, MiddleRemoval) {
     const size_t size = tree->size();
     EXPECT_TRUE(height == 2);
     EXPECT_TRUE(size == 3);
+}
+
+TEST(AvlTree, Iteration) {
+    auto tree = std::make_unique<AVLTree<int>>();
+    tree->insert(1);
+    tree->insert(2);
+    tree->insert(3);
 }
 // NOLINTEND
