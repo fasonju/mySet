@@ -1,29 +1,27 @@
 #pragma once
 
-#include "tree.h"
 #include <memory>
 #include <random>
 #include <vector>
+#include "container.h"
 
-template <typename T>
-    requires std::totally_ordered<T>
-class SkipList : AVLTree<T> {
+template <typename T, typename Compare = std::less<T>>
+class SkipList {
     public:
         //this one (or the maxLevel) even necessary?
         SkipList(int maxLevel = 20); //completely arbitrary value, log(1,000,000) =~ 20
 
-        ~SkipList() override;
+        ~SkipList();
 
-        bool insert(T&& value) override;
-        bool remove(const T& value) override;
-        T* search(const T& value) const override;
-        T* max() const override;
-        T* min() const override;
-        bool contains(const T& value) const override;
-        // [[nodiscard]] int height() const override;
-        [[nodiscard]] size_t size() const override;
-        void clear() override;
-        [[nodiscard]] bool empty() const override;
+        bool insert(T value);
+        bool remove(const T& value);
+        T* search(const T& value) const;
+        T* max() const;
+        T* min() const;
+        bool contains(const T& value) const;
+        [[nodiscard]] size_t size() const;
+        void clear();
+        [[nodiscard]] bool empty() const;
 
     private:
         struct Node {
@@ -42,4 +40,9 @@ class SkipList : AVLTree<T> {
         Node* _header;
         mutable std::mt19937 _gen;
         mutable std::uniform_real_distribution<> _dist;
+        Compare comp;
 };
+
+#include "skiplist.hpp"
+
+static_assert(Dontainer<SkipList<int>, int>);

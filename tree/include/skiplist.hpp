@@ -2,9 +2,8 @@
 
 #include "skiplist.h"
 
-template <typename T>
-    requires std::totally_ordered<T>
-bool SkipList<T>::insert(T&& value) {
+template <typename T, typename Compare>
+bool SkipList<T, Compare>::insert(T value) {
 
     return true;
 }
