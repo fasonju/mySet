@@ -1,14 +1,7 @@
-set(SOURCES
-  src/array_avl_tree.cpp
-        include/skiplist.h
-)
-
-add_library(tree STATIC ${SOURCES})
+add_library(tree INTERFACE)
 
 target_include_directories(tree
-    PUBLIC
+    INTERFACE
         ${CMAKE_CURRENT_SOURCE_DIR}/include/
-    PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/internal/
     # Include other third-party directories as needed
 )
