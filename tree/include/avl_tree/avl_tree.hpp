@@ -1,6 +1,6 @@
 #pragma once
 
-#include "avl_tree/pointer_avl_tree.h"
+#include "avl_tree/avl_tree.h"
 #include "log.h"
 #include <algorithm>
 #include <cstddef>
