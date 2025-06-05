@@ -2,48 +2,21 @@
 
 #include <concepts>
 #include <cstddef>
-template <typename T>
-    requires std::totally_ordered<T>
-class Container {
-  public:
-    Container() = default;
-    Container(const Container &) = delete;
-    Container(Container &&) = delete;
-    Container &operator=(const Container &) = delete;
-    Container &operator=(Container &&) = delete;
-    virtual ~Container() = default;
 
-    // Insert a value into the tree
-    virtual bool insert(T &&value) = 0;
+template <typename C, typename T>
+concept Dontainer = requires(C container, T value, const T &const_value) {
+    // modifiers
+    { container.insert(value) } -> std::same_as<bool>;
+    { container.remove(const_value) } -> std::same_as<bool>;
+    { container.clear() } -> std::same_as<void>;
 
-    // Remove a value from the tree
-    virtual bool remove(const T &value) = 0;
+    // access
+    { container.search(const_value) } -> std::same_as<T *>;
+    { container.max() } -> std::same_as<T *>;
+    { container.min() } -> std::same_as<T *>;
 
-    /**
-     * Search for a value in the tree
-     *
-     * returns nullptr if not found
-     */
-    virtual T *search(const T &value) const = 0;
-
-    // Get max value
-    virtual T *max() const = 0;
-
-    // Get min value
-    virtual T *min() const = 0;
-
-    // Check if the tree contains a specific value
-    virtual bool contains(const T &value) const = 0;
-
-    // Get the height of the tree
-    [[nodiscard]] virtual int height() const = 0;
-
-    // Get the number of nodes
-    [[nodiscard]] virtual size_t size() const = 0;
-
-    // Clear the entire tree
-    virtual void clear() = 0;
-
-    // Check if the tree is empty
-    [[nodiscard]] virtual bool empty() const = 0;
+    // info
+    { container.contains(const_value) } -> std::same_as<bool>;
+    { container.size() } -> std::same_as<std::size_t>;
+    { container.empty() } -> std::same_as<bool>;
 };
