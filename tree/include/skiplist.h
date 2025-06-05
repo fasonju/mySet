@@ -9,7 +9,7 @@ template <typename T>
     requires std::totally_ordered<T>
 class SkipList : AVLTree<T> {
     public:
-        //this one even necessary?
+        //this one (or the maxLevel) even necessary?
         SkipList(int maxLevel = 20); //completely arbitrary value, log(1,000,000) =~ 20
 
         ~SkipList() override;
@@ -21,7 +21,7 @@ class SkipList : AVLTree<T> {
         T* min() const override;
         bool contains(const T& value) const override;
         // [[nodiscard]] int height() const override;
-        [[nodiscard]] size() const override;
+        [[nodiscard]] size_t size() const override;
         void clear() override;
         [[nodiscard]] bool empty() const override;
 

@@ -26,6 +26,9 @@ T* SkipList<T>::search(const T& value) const {
 template <typename T>
     requires std::totally_ordered<T>
 T* SkipList<T>::max() const {
+    // go all the way to the lowest layer of skiplist,
+    // then run through until you reach a node that has no pointers out
+    // return value of last node
 
     return nullptr;
 }
@@ -33,6 +36,7 @@ T* SkipList<T>::max() const {
 template <typename T>
     requires std::totally_ordered<T>
 T* SkipList<T>::min() const {
+    // return the element after the dummy header
 
     return nullptr;
 }
@@ -47,6 +51,8 @@ bool SkipList<T>::contains(const T& value) const {
 template <typename T>
     requires std::totally_ordered<T>
 void SkipList<T>::clear() {
+    // discard previous linked list,
+    // start with new dummy header with value negative inf
 
     // empty
 }
@@ -54,6 +60,8 @@ void SkipList<T>::clear() {
 template <typename T>
     requires std::totally_ordered<T>
 bool SkipList<T>::empty() const {
+    // check if there is an element after dummy header
+    // return true if there is none
 
     return true;
 }
@@ -61,6 +69,9 @@ bool SkipList<T>::empty() const {
 template <typename T>
     requires std::totally_ordered<T>
 size_t SkipList<T>::size() const {
+    // go all the way to the lowest layer of skiplist,
+    // then run through and count the number of nodes
+    // until you reach a node that has no pointers out
 
     return 0;
 }
@@ -68,6 +79,8 @@ size_t SkipList<T>::size() const {
 template <typename T>
     requires std::totally_ordered<T>
 int SkipList<T>::randomLevel() {
+    // flip a coin, if heads, increment by one and flip again
+    // if tails, stop and return
 
     return 0;
 }
@@ -75,6 +88,7 @@ int SkipList<T>::randomLevel() {
 template <typename T>
     requires std::totally_ordered<T>
 typename SkipList<T>::Node* SkipList<T>::createNode(const T& value, int level) {
+    // idk
 
     return new Node(value, level);
 }
