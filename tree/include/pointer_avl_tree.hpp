@@ -46,33 +46,21 @@ bool PointerAVLTree<T>::insert(std::unique_ptr<Node> &node, T &&value) {
     // Left side
     if (balance > 1 && !subTreeRight) {
         rightRotate(node);
-        std::cout << "LL\n";
-        node->printTree();
-        std::cout << "========\n";
     }
 
     if (balance > 1 && subTreeRight) {
         leftRotate(node->left);
         rightRotate(node);
-        std::cout << "LR\n";
-        node->printTree();
-        std::cout << "========\n";
     }
 
     // Right side
     if (balance < -1 && subTreeRight) {
         leftRotate(node);
-        std::cout << "RR\n";
-        node->printTree();
-        std::cout << "========\n";
     }
 
     if (balance < -1 && !subTreeRight) {
         rightRotate(node->right);
         leftRotate(node);
-        std::cout << "RL\n";
-        node->printTree();
-        std::cout << "========\n";
     }
 
     return true;
