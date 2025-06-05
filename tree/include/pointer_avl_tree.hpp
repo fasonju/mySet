@@ -6,7 +6,6 @@
 #include <concepts>
 #include <cstddef>
 #include <cstdlib>
-#include <exception>
 #include <memory>
 #include <stdexcept>
 #include <utility>
