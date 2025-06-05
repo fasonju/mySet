@@ -3,7 +3,6 @@
 #include "log.h"
 #include "pointer_avl_tree.h"
 #include <algorithm>
-#include <concepts>
 #include <cstddef>
 #include <cstdlib>
 #include <memory>
@@ -11,7 +10,6 @@
 #include <utility>
 
 template <typename T>
-    requires std::totally_ordered<T>
 bool PointerAVLTree<T>::insert(std::unique_ptr<Node> &node, T &&value) {
     if (!node) {
         node = std::make_unique<Node>(std::move(value));
@@ -65,15 +63,11 @@ bool PointerAVLTree<T>::insert(std::unique_ptr<Node> &node, T &&value) {
     return true;
 }
 
-template <typename T>
-    requires std::totally_ordered<T>
-// NOLINTNEXTLINE(cppcoreguidelines-rvalue-reference-param-not-moved)
-bool PointerAVLTree<T>::insert(T &&value) {
+template <typename T> bool PointerAVLTree<T>::insert(T value) {
     return insert(this->head, std::forward<T>(value));
 }
 
 template <typename T>
-    requires std::totally_ordered<T>
 bool PointerAVLTree<T>::remove(std::unique_ptr<Node> &node, const T &value) {
     if (!node) {
         return false;
@@ -132,20 +126,15 @@ bool PointerAVLTree<T>::remove(std::unique_ptr<Node> &node, const T &value) {
     return true;
 }
 
-template <typename T>
-    requires std::totally_ordered<T>
-bool PointerAVLTree<T>::remove(const T &value) {
+template <typename T> bool PointerAVLTree<T>::remove(const T &value) {
     return remove(this->head, value);
 }
 
-template <typename T>
-    requires std::totally_ordered<T>
-T *PointerAVLTree<T>::search(const T &value) const {
+template <typename T> T *PointerAVLTree<T>::search(const T &value) const {
     return search(this->head, value);
 }
 
 template <typename T>
-    requires std::totally_ordered<T>
 T *PointerAVLTree<T>::search(const std::unique_ptr<Node> &node,
                              const T &value) const {
     if (node == nullptr) {
@@ -162,9 +151,7 @@ T *PointerAVLTree<T>::search(const std::unique_ptr<Node> &node,
     return search(node->right, value);
 }
 
-template <typename T>
-    requires std::totally_ordered<T>
-T *PointerAVLTree<T>::max() const {
+template <typename T> T *PointerAVLTree<T>::max() const {
     if (!this->head) {
         return nullptr;
     }
@@ -173,14 +160,11 @@ T *PointerAVLTree<T>::max() const {
 }
 
 template <typename T>
-    requires std::totally_ordered<T>
 T *PointerAVLTree<T>::max(const std::unique_ptr<Node> &node) const {
     return node->right ? max(node->right) : &node->value;
 }
 
-template <typename T>
-    requires std::totally_ordered<T>
-T *PointerAVLTree<T>::min() const {
+template <typename T> T *PointerAVLTree<T>::min() const {
     if (!this->head) {
         return nullptr;
     }
@@ -189,19 +173,15 @@ T *PointerAVLTree<T>::min() const {
 }
 
 template <typename T>
-    requires std::totally_ordered<T>
 T *PointerAVLTree<T>::min(const std::unique_ptr<Node> &node) const {
     return node->left ? max(node->left) : &node->value;
 }
 
-template <typename T>
-    requires std::totally_ordered<T>
-bool PointerAVLTree<T>::contains(const T &value) const {
+template <typename T> bool PointerAVLTree<T>::contains(const T &value) const {
     return contains(this->head, value);
 }
 
 template <typename T>
-    requires std::totally_ordered<T>
 bool PointerAVLTree<T>::contains(const std::unique_ptr<Node> &node,
                                  const T &value) const {
     if (!node) {
@@ -219,20 +199,15 @@ bool PointerAVLTree<T>::contains(const std::unique_ptr<Node> &node,
     return contains(node->right, value);
 }
 
-template <typename T>
-    requires std::totally_ordered<T>
-int PointerAVLTree<T>::height() const {
+template <typename T> int PointerAVLTree<T>::height() const {
     return this->head ? this->head->height : 0;
 }
 
-template <typename T>
-    requires std::totally_ordered<T>
-size_t PointerAVLTree<T>::size() const {
+template <typename T> size_t PointerAVLTree<T>::size() const {
     return size(this->head);
 }
 
 template <typename T>
-    requires std::totally_ordered<T>
 size_t PointerAVLTree<T>::size(const std::unique_ptr<Node> &node) const {
     if (!node) {
         return 0;
@@ -241,20 +216,13 @@ size_t PointerAVLTree<T>::size(const std::unique_ptr<Node> &node) const {
     return size(node->left) + size(node->right) + 1;
 }
 
-template <typename T>
-    requires std::totally_ordered<T>
-void PointerAVLTree<T>::clear() {
-    this->head = nullptr;
-}
+template <typename T> void PointerAVLTree<T>::clear() { this->head = nullptr; }
 
-template <typename T>
-    requires std::totally_ordered<T>
-bool PointerAVLTree<T>::empty() const {
+template <typename T> bool PointerAVLTree<T>::empty() const {
     return !this->head;
 }
 
 template <typename T>
-    requires std::totally_ordered<T>
 int PointerAVLTree<T>::getBalance(const std::unique_ptr<Node> &node) const {
     const int leftHeight = node->left ? node->left->height : 0;
     const int rightHeight = node->right ? node->right->height : 0;
@@ -262,7 +230,6 @@ int PointerAVLTree<T>::getBalance(const std::unique_ptr<Node> &node) const {
 }
 
 template <typename T>
-    requires std::totally_ordered<T>
 void PointerAVLTree<T>::leftRotate(std::unique_ptr<Node> &node) {
     if (!node || !node->right) {
         return;
@@ -279,7 +246,6 @@ void PointerAVLTree<T>::leftRotate(std::unique_ptr<Node> &node) {
 }
 
 template <typename T>
-    requires std::totally_ordered<T>
 void PointerAVLTree<T>::rightRotate(std::unique_ptr<Node> &node) {
     if (!node || !node->left) {
         return;
@@ -301,7 +267,6 @@ void PointerAVLTree<T>::rightRotate(std::unique_ptr<Node> &node) {
  * Assumes right subtree exists
  */
 template <typename T>
-    requires std::totally_ordered<T>
 std::unique_ptr<typename PointerAVLTree<T>::Node> &
 PointerAVLTree<T>::getInOrderSuccessor(
     const std::unique_ptr<Node> &node) const {
@@ -320,7 +285,6 @@ PointerAVLTree<T>::getInOrderSuccessor(
 }
 
 template <typename T>
-    requires std::totally_ordered<T>
 void PointerAVLTree<T>::updateHeight(std::unique_ptr<Node> &node) {
     const bool leftExists = node->left != nullptr;
     const bool rightExists = node->right != nullptr;

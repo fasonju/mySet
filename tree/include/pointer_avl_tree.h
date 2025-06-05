@@ -1,12 +1,9 @@
 #pragma once
 
 #include "container.h"
-#include <iostream>
 #include <memory>
 
-template <typename T>
-    requires std::totally_ordered<T>
-class PointerAVLTree : Container<T> {
+template <typename T> class PointerAVLTree {
   public:
     PointerAVLTree() : head(nullptr) {};
     PointerAVLTree(const PointerAVLTree &) = delete;
@@ -16,38 +13,38 @@ class PointerAVLTree : Container<T> {
     ~PointerAVLTree() = default;
 
     // Insert a value into the tree
-    bool insert(T &&value) override;
+    bool insert(T value);
 
     // Remove a value from the tree
-    bool remove(const T &value) override;
+    bool remove(const T &value);
 
     /**
      * Search for a value in the tree
      *
      * returns nullptr if not found
      */
-    T *search(const T &value) const override;
+    [[nodiscard]] T *search(const T &value) const;
 
     // Get max value
-    T *max() const override;
+    [[nodiscard]] T *max() const;
 
     // Get min value
-    T *min() const override;
+    [[nodiscard]] T *min() const;
 
     // Check if the tree contains a specific value
-    bool contains(const T &value) const override;
+    [[nodiscard]] bool contains(const T &value) const;
 
     // Get the height of the tree
-    [[nodiscard]] int height() const override;
+    [[nodiscard]] int height() const;
 
     // Get the number of nodes
-    [[nodiscard]] size_t size() const override;
+    [[nodiscard]] size_t size() const;
 
     // Clear the entire tree
-    void clear() override;
+    void clear();
 
     // Check if the tree is empty
-    [[nodiscard]] bool empty() const override;
+    [[nodiscard]] bool empty() const;
 
   private:
     struct Node {
@@ -58,38 +55,29 @@ class PointerAVLTree : Container<T> {
 
         explicit Node(T &&value)
             : value(std::move(value)), left(nullptr), right(nullptr) {}
-
-        void printTree(int indent = 0) const {
-            if (right) {
-                right->printTree(indent + 4);
-            }
-
-            if (indent != 0) {
-                std::cout << std::string(indent, ' ');
-            }
-            std::cout << value << " " << height << "\n";
-
-            if (left) {
-                left->printTree(indent + 4);
-            }
-        }
     };
 
     std::unique_ptr<Node> head;
 
     bool insert(std::unique_ptr<Node> &node, T &&value);
     bool remove(std::unique_ptr<Node> &node, const T &value);
-    T *search(const std::unique_ptr<Node> &Node, const T &value) const;
-    T *max(const std::unique_ptr<Node> &node) const;
-    T *min(const std::unique_ptr<Node> &node) const;
-    bool contains(const std::unique_ptr<Node> &node, const T &value) const;
-    size_t size(const std::unique_ptr<Node> &node) const;
-    std::unique_ptr<Node> &
+    [[nodiscard]] T *search(const std::unique_ptr<Node> &Node,
+                            const T &value) const;
+    [[nodiscard]] T *max(const std::unique_ptr<Node> &node) const;
+    [[nodiscard]] T *min(const std::unique_ptr<Node> &node) const;
+    [[nodiscard]] bool contains(const std::unique_ptr<Node> &node,
+                                const T &value) const;
+    [[nodiscard]] size_t size(const std::unique_ptr<Node> &node) const;
+    [[nodiscard]] std::unique_ptr<Node> &
     getInOrderSuccessor(const std::unique_ptr<Node> &node) const;
-    int getBalance(const std::unique_ptr<Node> &node) const;
+    [[nodiscard]] int getBalance(const std::unique_ptr<Node> &node) const;
     void leftRotate(std::unique_ptr<Node> &node);
     void rightRotate(std::unique_ptr<Node> &node);
     void updateHeight(std::unique_ptr<Node> &node);
 };
 
+template <typename T> class PointerAVLTreeIterator {};
+
 #include "pointer_avl_tree.hpp"
+
+static_assert(Dontainer<PointerAVLTree<int>, int>);
