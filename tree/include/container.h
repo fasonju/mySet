@@ -4,14 +4,14 @@
 #include <cstddef>
 template <typename T>
     requires std::totally_ordered<T>
-class AVLTree {
+class Container {
   public:
-    AVLTree() = default;
-    AVLTree(const AVLTree &) = delete;
-    AVLTree(AVLTree &&) = delete;
-    AVLTree &operator=(const AVLTree &) = delete;
-    AVLTree &operator=(AVLTree &&) = delete;
-    virtual ~AVLTree() = default;
+    Container() = default;
+    Container(const Container &) = delete;
+    Container(Container &&) = delete;
+    Container &operator=(const Container &) = delete;
+    Container &operator=(Container &&) = delete;
+    virtual ~Container() = default;
 
     // Insert a value into the tree
     virtual bool insert(T &&value) = 0;

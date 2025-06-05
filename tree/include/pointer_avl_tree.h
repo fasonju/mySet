@@ -1,12 +1,12 @@
 #pragma once
 
-#include "tree.h"
+#include "container.h"
 #include <iostream>
 #include <memory>
 
 template <typename T>
     requires std::totally_ordered<T>
-class PointerAVLTree : AVLTree<T> {
+class PointerAVLTree : Container<T> {
   public:
     PointerAVLTree() : head(nullptr) {};
     PointerAVLTree(const PointerAVLTree &) = delete;
