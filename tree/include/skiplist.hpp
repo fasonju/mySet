@@ -2,6 +2,8 @@
 
 #include "skiplist.h"
 
+// Insert a value into the skiplist
+// return true if successfully inserted, false otherwise
 template <typename T, typename Compare>
 bool SkipList<T, Compare>::insert(T value) {
     // to keep track of pointers from nodes to update
@@ -50,8 +52,45 @@ bool SkipList<T, Compare>::insert(T value) {
     return true;
 }
 
+// Remove a value from the skiplist
+// return true if successfully removed, false otherwise
 template <typename T, typename Compare>
 bool SkipList<T, Compare>::remove(const T& value) {
+    std::vector<Node*> update(_maxLevel, nullptr);
+    Node* current = _header;
+
+    // start at highest express lane, go down a level when next node is
+    // higher than node we are looking for
+    for (int level = _currentLevel - 1; level >= 0; --level) {
+        bool lessThan = comp(current->forward[level]->value, value);
+        while (current->forward[level] && lessThan) {
+            current = current->forward[level];
+        }
+    }
+
+    current = current->forward[0];
+
+    // if value doesnt exist, return false
+    if (!current || comp(value, current->value) || comp(current->value, value)) {
+        return false;
+    }
+
+    // update forward pointers to point at next item on each express lane
+    for (int i = 0; i < _currentLevel; ++i) {
+        // check if there are no more pointers at this level or further
+        if (update[i]->forward[i] != current) {
+            break;
+        }
+        update[i]->forward[i] = current->forward[i];
+    }
+
+    delete current;
+    --_size;
+
+    // update current level if necessary (deleted a node of the highest express lane)
+    while (_currentLevel > 1 && _header->forward[_currentLevel - 1] == nullptr) {
+        --_currentLevel;
+    }
 
     return true;
 }
@@ -126,7 +165,7 @@ bool SkipList<T, Compare>::contains(const T& value) const {
     return current && equal;
 }
 
-// Clear the whole skiplist of its nodes and reset the header's pointers
+// Clear the whole skiplist of its nodes and reset the headers' pointers
 template <typename T, typename Compare>
 void SkipList<T, Compare>::clear() {
     Node* current = _header->forward[0];
@@ -169,6 +208,7 @@ int SkipList<T, Compare>::randomLevel() {
     return level;
 }
 
+// create a node with a value and its level (how many express lanes it covers)
 template <typename T, typename Compare>
 typename SkipList<T, Compare>::Node* SkipList<T, Compare>::createNode(const T& value, int level) {
     return new Node(value, level);
