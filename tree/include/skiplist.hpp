@@ -26,7 +26,14 @@ T* SkipList<T, Compare>::max() const {
     // then run through until you reach a node that has no pointers out
     // return value of last node
 
-    return nullptr;
+    Node* x = _header;
+    // Traverse as far as possible on level 0
+    while (x->forward[0] != nullptr) {
+        x = x->forward[0];
+    }
+
+    // If list is empty, x == _header, and x->forward[0] == nullptr
+    return (x == _header) ? nullptr : &x->value;
 }
 
 template <typename T, typename Compare>
