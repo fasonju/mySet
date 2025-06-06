@@ -14,8 +14,28 @@ bool SkipList<T, Compare>::remove(const T& value) {
     return true;
 }
 
+// Search the skiplist for a value
+// return the node if the value exists, else return a nullpointer
 template <typename T, typename Compare>
 T* SkipList<T, Compare>::search(const T& value) const {
+    Node* current = _header;
+
+    // start at highest express lane, go down a level when next node is
+    // higher than node we are looking for
+    for (int level = _currentLevel - 1; level >= 0; --level) {
+        bool lessThan = comp(current->forward[level]->value, value);
+        while (current->forward[level] && lessThan) {
+            current = current->forward[level];
+        }
+    }
+
+    current = current->forward[0];
+
+    // Check if the found node equals the value
+    bool equal = !comp(value, current->value) && !comp(current->value, value);
+    if (current && equal) {
+        return &current->value;
+    }
 
     return nullptr;
 }
@@ -42,6 +62,8 @@ T* SkipList<T, Compare>::min() const {
     return x ? &x->value : nullptr;
 }
 
+// Look if a value exists in the skiplist
+// return true if it exists, else return false
 template <typename T, typename Compare>
 bool SkipList<T, Compare>::contains(const T& value) const {
     Node* current = _header;
