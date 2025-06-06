@@ -100,6 +100,8 @@ bool AVLTree<T, Compare>::remove(std::unique_ptr<Node> &node, const T &value) {
                 std::make_unique<Node>(std::move(successorValue));
 
             remove(node->right, inorderSuccessor->value);
+            newNode->left = std::move(node->left);
+            newNode->right = std::move(node->right);
             node = std::move(newNode);
         }
     }
