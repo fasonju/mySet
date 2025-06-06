@@ -212,7 +212,6 @@ int AVLTree<T, Compare>::height() const {
 
 template <typename T, typename Compare>
 size_t AVLTree<T, Compare>::size() const {
-    LOG_ERROR(size(this->head));
     return size(this->head);
 }
 
