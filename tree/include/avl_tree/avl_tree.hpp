@@ -100,6 +100,8 @@ bool AVLTree<T, Compare>::remove(std::unique_ptr<Node> &node, const T &value) {
                 std::make_unique<Node>(std::move(successorValue));
 
             remove(node->right, inorderSuccessor->value);
+            newNode->left = std::move(node->left);
+            newNode->right = std::move(node->right);
             node = std::move(newNode);
         }
     }
@@ -210,6 +212,7 @@ int AVLTree<T, Compare>::height() const {
 
 template <typename T, typename Compare>
 size_t AVLTree<T, Compare>::size() const {
+    LOG_ERROR(size(this->head));
     return size(this->head);
 }
 

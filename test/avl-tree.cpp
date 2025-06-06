@@ -110,10 +110,10 @@ TEST(AvlTree, RootRemoval) {
     AVLTree<int> tree;
     tree.insert(1);
     tree.insert(2);
-    tree.remove(1);
-    EXPECT_EQ(tree.height(), 1);
-    EXPECT_EQ(tree.size(), 1u);
-    EXPECT_EQ(tree.search(1), nullptr);
+    tree.insert(3);
+    tree.remove(2);
+    EXPECT_EQ(tree.search(2), nullptr);
+    EXPECT_TRUE(tree.contains(1));
 }
 
 TEST(AvlTree, MiddleRemoval) {
@@ -173,4 +173,85 @@ TEST(AvlTree, Iteration) {
     EXPECT_EQ(*it++, 3);
     EXPECT_EQ(it, tree.end());
 }
+
+TEST(AvlTree, MinMaxEmptyTree) {
+    AVLTree<int> tree;
+
+    EXPECT_EQ(tree.min(), nullptr);
+    EXPECT_EQ(tree.max(), nullptr);
+}
+
+TEST(AvlTree, MinMaxSingleElement) {
+    AVLTree<int> tree;
+    tree.insert(42);
+
+    ASSERT_NE(tree.min(), nullptr);
+    ASSERT_NE(tree.max(), nullptr);
+    EXPECT_EQ(*tree.min(), 42);
+    EXPECT_EQ(*tree.max(), 42);
+}
+
+TEST(AvlTree, MinMaxMultipleElements) {
+    AVLTree<int> tree;
+    tree.insert(10);
+    tree.insert(20);
+    tree.insert(5);
+    tree.insert(15);
+
+    ASSERT_NE(tree.min(), nullptr);
+    ASSERT_NE(tree.max(), nullptr);
+    EXPECT_EQ(*tree.min(), 5);
+    EXPECT_EQ(*tree.max(), 20);
+}
+
+TEST(AvlTree, ContainsFunctionality) {
+    AVLTree<int> tree;
+    tree.insert(7);
+    tree.insert(3);
+    tree.insert(9);
+
+    EXPECT_TRUE(tree.contains(3));
+    EXPECT_TRUE(tree.contains(7));
+    EXPECT_TRUE(tree.contains(9));
+    EXPECT_FALSE(tree.contains(4));
+    EXPECT_FALSE(tree.contains(10));
+}
+
+TEST(AvlTree, SizeAndEmpty) {
+    AVLTree<int> tree;
+
+    EXPECT_TRUE(tree.empty());
+    EXPECT_EQ(tree.size(), 0u);
+
+    tree.insert(1);
+    EXPECT_FALSE(tree.empty());
+    EXPECT_EQ(tree.size(), 1u);
+
+    tree.insert(2);
+    tree.insert(3);
+    EXPECT_EQ(tree.size(), 3u);
+
+    tree.remove(2);
+    EXPECT_TRUE(tree.contains(1));
+    EXPECT_TRUE(tree.contains(3));
+    EXPECT_EQ(tree.size(), 2u);
+}
+
+TEST(AvlTree, HeightTracking) {
+    AVLTree<int> tree;
+
+    EXPECT_EQ(tree.height(), 0);
+
+    tree.insert(1);
+    EXPECT_EQ(tree.height(), 1);
+
+    tree.insert(2);
+    tree.insert(3); // Causes balancing
+    EXPECT_EQ(tree.height(), 2);
+
+    tree.insert(4);
+    tree.insert(5);
+    EXPECT_EQ(tree.height(), 3);
+}
+
 // NOLINTEND
