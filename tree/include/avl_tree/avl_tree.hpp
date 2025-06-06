@@ -313,5 +313,3 @@ template <typename T, typename Compare>
 AVLTree<T, Compare>::Iterator AVLTree<T, Compare>::end() const {
     return Iterator();
 }
-
-#include "avl_tree/avl_tree.hpp"
