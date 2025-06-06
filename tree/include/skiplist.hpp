@@ -32,8 +32,8 @@ T* SkipList<T, Compare>::max() const {
 template <typename T, typename Compare>
 T* SkipList<T, Compare>::min() const {
     // return the element after the dummy header
-
-    return nullptr;
+    Node* x = _header->forward[0];
+    return x ? &x->value : nullptr;
 }
 
 template <typename T, typename Compare>
