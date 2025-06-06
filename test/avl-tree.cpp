@@ -137,6 +137,30 @@ TEST(AvlTree, LeafRemoval) {
     EXPECT_EQ(tree.search(3), nullptr);
 }
 
+TEST(AvlTree, Clear) {
+    AVLTree<int> tree;
+    tree.insert(1);
+    tree.insert(2);
+    tree.clear();
+
+    EXPECT_EQ(tree.size(), 0);
+    EXPECT_TRUE(tree.empty());
+    EXPECT_EQ(tree.height(), 0);
+}
+
+TEST(AVLTree, Search) {
+    AVLTree<int> tree;
+    tree.insert(1);
+    tree.insert(2);
+    tree.insert(3);
+
+    EXPECT_EQ(*tree.search(1), 1);
+    EXPECT_EQ(*tree.search(2), 2);
+    EXPECT_EQ(*tree.search(3), 3);
+    tree.remove(2);
+    EXPECT_EQ(tree.search(2), nullptr);
+}
+
 TEST(AvlTree, Iteration) {
     AVLTree<int> tree;
     tree.insert(3);
