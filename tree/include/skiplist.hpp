@@ -52,19 +52,12 @@ void SkipList<T, Compare>::clear() {
 
 template <typename T, typename Compare>
 bool SkipList<T, Compare>::empty() const {
-    // check if there is an element after dummy header
-    // return true if there is none
-
-    return true;
+    return _size == 0; // no need for generic compare function
 }
 
 template <typename T, typename Compare>
 size_t SkipList<T, Compare>::size() const {
-    // go all the way to the lowest layer of skiplist,
-    // then run through and count the number of nodes
-    // until you reach a node that has no pointers out
-
-    return 0;
+    return _size;
 }
 
 template <typename T, typename Compare>
