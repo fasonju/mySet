@@ -20,12 +20,11 @@ T* SkipList<T, Compare>::search(const T& value) const {
     return nullptr;
 }
 
+// go all the way to the lowest layer of skiplist,
+// then run through until you reach a node that has no pointers out
+// return value of last node
 template <typename T, typename Compare>
 T* SkipList<T, Compare>::max() const {
-    // go all the way to the lowest layer of skiplist,
-    // then run through until you reach a node that has no pointers out
-    // return value of last node
-
     Node* x = _header;
     // Traverse as far as possible on level 0
     while (x->forward[0] != nullptr) {
@@ -36,9 +35,9 @@ T* SkipList<T, Compare>::max() const {
     return (x == _header) ? nullptr : &x->value;
 }
 
+// return the element after the dummy header
 template <typename T, typename Compare>
 T* SkipList<T, Compare>::min() const {
-    // return the element after the dummy header
     Node* x = _header->forward[0];
     return x ? &x->value : nullptr;
 }
@@ -49,12 +48,25 @@ bool SkipList<T, Compare>::contains(const T& value) const {
     return true;
 }
 
+// Clear the whole skiplist of its nodes and reset the header's pointers
 template <typename T, typename Compare>
 void SkipList<T, Compare>::clear() {
-    // discard previous linked list,
-    // start with new dummy header with value negative inf
+    Node* current = _header->forward[0];
 
-    // empty
+    // delete all nodes by traverding lvl 0
+    while (current != nullptr) {
+        Node* next = current->forward[0];
+        delete current;
+        current = next;
+    }
+
+    // reset header pointers
+    for (auto& ptr : _header->forward) {
+        ptr = nullptr;
+    }
+
+    _size = 0;
+    _currentLevel = 1;
 }
 
 template <typename T, typename Compare>
