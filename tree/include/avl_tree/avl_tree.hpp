@@ -235,6 +235,7 @@ template <typename T, typename Compare>
 int AVLTree<T, Compare>::getBalance(const std::unique_ptr<Node> &node) const {
     const int leftHeight = node->left ? node->left->height : 0;
     const int rightHeight = node->right ? node->right->height : 0;
+
     return leftHeight - rightHeight;
 }
 
@@ -302,3 +303,15 @@ void AVLTree<T, Compare>::updateHeight(std::unique_ptr<Node> &node) {
     const int rightHeight = rightExists ? node->right->height : 0;
     node->height = std::max(leftHeight, rightHeight) + 1;
 }
+
+template <typename T, typename Compare>
+AVLTree<T, Compare>::Iterator AVLTree<T, Compare>::begin() const {
+    return Iterator(head.get());
+}
+
+template <typename T, typename Compare>
+AVLTree<T, Compare>::Iterator AVLTree<T, Compare>::end() const {
+    return Iterator();
+}
+
+#include "avl_tree/avl_tree.hpp"
