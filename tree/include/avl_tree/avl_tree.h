@@ -33,6 +33,7 @@ template <typename T, typename Compare = std::less<T>> class AVLTree {
         using pointer = T *;   // or also value_type*
         using reference = T &; // or also value_type&
 
+        Iterator() = default;
         explicit Iterator(Node *node) { pushLeftNodes(node); }
 
         reference operator*() const { return nodeStack.top()->value; }
@@ -137,4 +138,12 @@ template <typename T, typename Compare = std::less<T>> class AVLTree {
 #include "avl_tree/avl_tree.hpp"
 
 static_assert(Dontainer<AVLTree<int>, int>);
-// static_assert(std::ranges::range<AVLTree<int>>);
+static_assert(std::ranges::range<AVLTree<int>>);
+// Is Iterator a valid input iterator?
+static_assert(std::input_iterator<AVLTree<int>::Iterator>,
+              "Iterator must satisfy input_iterator");
+
+// Is end() a sentinel for begin()? (should be same type if using same iterator
+// for end)
+static_assert(std::sentinel_for<AVLTree<int>::Iterator, AVLTree<int>::Iterator>,
+              "Iterator must be a sentinel for itself");
