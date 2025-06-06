@@ -69,20 +69,22 @@ void SkipList<T, Compare>::clear() {
     _currentLevel = 1;
 }
 
+// check if there are elements in the skiplist (besides header)
 template <typename T, typename Compare>
 bool SkipList<T, Compare>::empty() const {
     return _size == 0; // no need for generic compare function
 }
 
+// return the number of elements in the skiplist
 template <typename T, typename Compare>
 size_t SkipList<T, Compare>::size() const {
     return _size;
 }
 
+// flip a coin, if heads, increment by one and flip again
+// if tails, stop and return
 template <typename T, typename Compare>
 int SkipList<T, Compare>::randomLevel() {
-    // flip a coin, if heads, increment by one and flip again
-    // if tails, stop and return
     int level = 1;
     while (_dist(_gen) < 0.5 && level < _maxLevel)
         ++level;
@@ -91,7 +93,5 @@ int SkipList<T, Compare>::randomLevel() {
 
 template <typename T, typename Compare>
 typename SkipList<T, Compare>::Node* SkipList<T, Compare>::createNode(const T& value, int level) {
-    // idk
-
     return new Node(value, level);
 }
