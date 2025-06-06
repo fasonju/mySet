@@ -4,7 +4,49 @@
 
 template <typename T, typename Compare>
 bool SkipList<T, Compare>::insert(T value) {
+    // to keep track of pointers from nodes to update
+    std::vector<Node*> update(_maxLevel, nullptr);
+    Node* current = _header;
 
+    // start at highest express lane, go down a level when next node is
+    // higher than node we are looking for
+    for (int level = _currentLevel - 1; level >= 0; --level) {
+        bool lessThan = comp(current->forward[level]->value, value);
+        while (current->forward[level] && lessThan) {
+            current = current->forward[level];
+        }
+    }
+
+    current = current->forward[0];
+
+    // if node with value already exists, dont insert
+    bool equal = !comp(value, current->value) && !comp(current->value, value);
+    if (current && equal) {
+        return false;
+    }
+
+    // get level of node for express lanes
+    int nodeLevel = randomLevel();
+
+    // if not enough express lanes exist for the generated level, create them
+    if (nodeLevel > _currentLevel) {
+        for (int i = _currentLevel; i < nodeLevel; ++i) {
+            update[i] = _header;
+        }
+        _currentLevel = nodeLevel;
+    }
+
+    Node* newNode = createNode(value, nodeLevel);
+
+    for (int i = 0; i < nodeLevel; ++i) {
+        // set outgoing pointers to next point in lane
+        newNode->forward[i] = update[i]->forward[i];
+
+        // set incoming pointers from the memorized update list
+        update[i]->forward[i] = newNode;
+    }
+
+    ++_size;
     return true;
 }
 
