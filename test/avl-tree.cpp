@@ -1,41 +1,34 @@
 // NOLINTBEGIN
 #include "avl_tree/avl_tree.h"
-#include <cstddef>
 #include <gtest/gtest.h>
 
 TEST(AvlTree, Initalization) {
     AVLTree<int> tree;
 
-    EXPECT_TRUE(tree.height() == 0);
+    EXPECT_EQ(tree.height(), 0);
     EXPECT_TRUE(tree.empty());
-    EXPECT_TRUE(tree.min() == nullptr);
-    EXPECT_TRUE(tree.max() == nullptr);
-    EXPECT_TRUE(tree.size() == 0);
+    EXPECT_EQ(tree.min(), nullptr);
+    EXPECT_EQ(tree.max(), nullptr);
+    EXPECT_EQ(tree.size(), 0u);
 }
 
 TEST(AvlTree, SimpleInsertion) {
     AVLTree<int> tree;
 
-    const bool succeeded = tree.insert(1);
-    const int *value = tree.search(1);
-
-    EXPECT_TRUE(succeeded);
-    EXPECT_TRUE(*value == 1);
+    EXPECT_TRUE(tree.insert(1));
+    ASSERT_NE(tree.search(1), nullptr);
+    EXPECT_EQ(*tree.search(1), 1);
 }
 
 TEST(AvlTree, DuplicateKeyInsertion) {
     AVLTree<int> tree;
 
     tree.insert(1);
-    const bool succeeded = tree.insert(1);
-    const int *value = tree.search(1);
-    const int height = tree.height();
-    const size_t size = tree.size();
-
-    EXPECT_FALSE(succeeded);
-    EXPECT_TRUE(*value == 1);
-    EXPECT_TRUE(height == 1);
-    EXPECT_TRUE(size == 1);
+    EXPECT_FALSE(tree.insert(1));
+    ASSERT_NE(tree.search(1), nullptr);
+    EXPECT_EQ(*tree.search(1), 1);
+    EXPECT_EQ(tree.height(), 1);
+    EXPECT_EQ(tree.size(), 1u);
 }
 
 TEST(AvlTree, LeftLeftInsertion) {
@@ -45,16 +38,11 @@ TEST(AvlTree, LeftLeftInsertion) {
     tree.insert(5);
     tree.insert(3);
     tree.insert(2);
-    const int preRotationHeight = tree.height();
-    const size_t preRotationSize = tree.size();
+    EXPECT_EQ(tree.height(), 3);
+    EXPECT_EQ(tree.size(), 4u);
     tree.insert(1);
-    const int postRotationHeight = tree.height();
-    const size_t postRotationSize = tree.size();
-
-    EXPECT_TRUE(preRotationHeight == 3);
-    EXPECT_TRUE(preRotationSize == 4);
-    EXPECT_TRUE(postRotationHeight == 3);
-    EXPECT_TRUE(postRotationSize == 5);
+    EXPECT_EQ(tree.height(), 3);
+    EXPECT_EQ(tree.size(), 5u);
 }
 
 TEST(AvlTree, RightRightInsertion) {
@@ -64,16 +52,11 @@ TEST(AvlTree, RightRightInsertion) {
     tree.insert(1);
     tree.insert(3);
     tree.insert(4);
-    const int preRotationHeight = tree.height();
-    const size_t preRotationSize = tree.size();
+    EXPECT_EQ(tree.height(), 3);
+    EXPECT_EQ(tree.size(), 4u);
     tree.insert(5);
-    const int postRotationHeight = tree.height();
-    const size_t postRotationSize = tree.size();
-
-    EXPECT_TRUE(preRotationHeight == 3);
-    EXPECT_TRUE(preRotationSize == 4);
-    EXPECT_TRUE(postRotationHeight == 3);
-    EXPECT_TRUE(postRotationSize == 5);
+    EXPECT_EQ(tree.height(), 3);
+    EXPECT_EQ(tree.size(), 5u);
 }
 
 TEST(AvlTree, LeftRightInsertion) {
@@ -83,16 +66,11 @@ TEST(AvlTree, LeftRightInsertion) {
     tree.insert(7);
     tree.insert(5);
     tree.insert(3);
-    const int preRotationHeight = tree.height();
-    const size_t preRotationSize = tree.size();
+    EXPECT_EQ(tree.height(), 3);
+    EXPECT_EQ(tree.size(), 4u);
     tree.insert(4);
-    const int postRotationHeight = tree.height();
-    const size_t postRotationSize = tree.size();
-
-    EXPECT_TRUE(preRotationHeight == 3);
-    EXPECT_TRUE(preRotationSize == 4);
-    EXPECT_TRUE(postRotationHeight == 3);
-    EXPECT_TRUE(postRotationSize == 5);
+    EXPECT_EQ(tree.height(), 3);
+    EXPECT_EQ(tree.size(), 5u);
 }
 
 TEST(AvlTree, RightLeftInsertion) {
@@ -102,77 +80,51 @@ TEST(AvlTree, RightLeftInsertion) {
     tree.insert(1);
     tree.insert(3);
     tree.insert(5);
-    const int preRotationHeight = tree.height();
-    const size_t preRotationSize = tree.size();
+    EXPECT_EQ(tree.height(), 3);
+    EXPECT_EQ(tree.size(), 4u);
     tree.insert(4);
-    const int postRotationHeight = tree.height();
-    const size_t postRotationSize = tree.size();
-
-    EXPECT_TRUE(preRotationHeight == 3);
-    EXPECT_TRUE(preRotationSize == 4);
-    EXPECT_TRUE(postRotationHeight == 3);
-    EXPECT_TRUE(postRotationSize == 5);
+    EXPECT_EQ(tree.height(), 3);
+    EXPECT_EQ(tree.size(), 5u);
 }
 
 TEST(AvlTree, EmptyRemoval) {
     AVLTree<int> tree;
-
-    const bool successful = tree.remove(1);
-
-    EXPECT_FALSE(successful);
+    EXPECT_FALSE(tree.remove(1));
 }
 
 TEST(AvlTree, NonExistitantRemoval) {
     AVLTree<int> tree;
-
     tree.insert(1);
-    const bool successful = tree.remove(2);
-
-    EXPECT_FALSE(successful);
+    EXPECT_FALSE(tree.remove(2));
 }
 
 TEST(AvlTree, OnlyNodeRemoval) {
     AVLTree<int> tree;
-
     tree.insert(1);
-    const bool successful = tree.remove(1);
-    const int height = tree.height();
-    const size_t size = tree.size();
-
-    EXPECT_TRUE(successful);
-    EXPECT_TRUE(height == 0);
-    EXPECT_TRUE(size == 0);
+    EXPECT_TRUE(tree.remove(1));
+    EXPECT_EQ(tree.height(), 0);
+    EXPECT_EQ(tree.size(), 0u);
 }
 
 TEST(AvlTree, RootRemoval) {
     AVLTree<int> tree;
-
     tree.insert(1);
     tree.insert(2);
     tree.remove(1);
-
-    const int height = tree.height();
-    const size_t size = tree.size();
-    const int *value = tree.search(1);
-
-    EXPECT_TRUE(height == 1);
-    EXPECT_TRUE(size == 1);
-    EXPECT_TRUE(value == nullptr);
+    EXPECT_EQ(tree.height(), 1);
+    EXPECT_EQ(tree.size(), 1u);
+    EXPECT_EQ(tree.search(1), nullptr);
 }
 
 TEST(AvlTree, MiddleRemoval) {
     AVLTree<int> tree;
-
     tree.insert(1);
     tree.insert(2);
     tree.insert(3);
     tree.insert(4);
     tree.remove(3);
-
-    const int height = tree.height();
-    const size_t size = tree.size();
-    EXPECT_TRUE(height == 2);
-    EXPECT_TRUE(size == 3);
+    EXPECT_EQ(tree.height(), 2);
+    EXPECT_EQ(tree.size(), 3u);
 }
 
 TEST(AvlTree, LeafRemoval) {
@@ -181,8 +133,7 @@ TEST(AvlTree, LeafRemoval) {
     tree.insert(2);
     tree.insert(3);
     tree.remove(3);
-
-    EXPECT_EQ(tree.size(), 2);
+    EXPECT_EQ(tree.size(), 2u);
     EXPECT_EQ(tree.search(3), nullptr);
 }
 
@@ -192,13 +143,10 @@ TEST(AvlTree, Iteration) {
     tree.insert(2);
     tree.insert(3);
 
-    auto iterator = tree.begin();
-    EXPECT_TRUE(*iterator == 1);
-    iterator++;
-    EXPECT_TRUE(*iterator == 2);
-    iterator++;
-    EXPECT_TRUE(*iterator == 3);
-    iterator++;
-    EXPECT_TRUE(iterator == tree.end());
+    auto it = tree.begin();
+    EXPECT_EQ(*it++, 1);
+    EXPECT_EQ(*it++, 2);
+    EXPECT_EQ(*it++, 3);
+    EXPECT_EQ(it, tree.end());
 }
 // NOLINTEND
