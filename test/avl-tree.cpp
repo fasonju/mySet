@@ -1,5 +1,5 @@
 // NOLINTBEGIN
-#include "avl_tree/pointer_avl_tree.h"
+#include "avl_tree/avl_tree.h"
 #include <cstddef>
 #include <gtest/gtest.h>
 
@@ -180,5 +180,14 @@ TEST(AvlTree, Iteration) {
     tree->insert(1);
     tree->insert(2);
     tree->insert(3);
+
+    auto iterator = tree->begin();
+    EXPECT_TRUE(*iterator == 1);
+    iterator++;
+    EXPECT_TRUE(*iterator == 2);
+    iterator++;
+    EXPECT_TRUE(*iterator == 3);
+    iterator++;
+    EXPECT_TRUE(iterator == tree->end());
 }
 // NOLINTEND
