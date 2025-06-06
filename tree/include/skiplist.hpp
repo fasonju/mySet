@@ -44,8 +44,22 @@ T* SkipList<T, Compare>::min() const {
 
 template <typename T, typename Compare>
 bool SkipList<T, Compare>::contains(const T& value) const {
+    Node* current = _header;
 
-    return true;
+    // start at highest express lane, go down a level when next node is
+    // higher than node we are looking for
+    for (int level = _currentLevel - 1; level >= 0; --level) {
+        bool lessThan = comp(current->forward[level]->value, value);
+        while (current->forward[level] && lessThan) {
+            current = current->forward[level];
+        }
+    }
+
+    // next node is the one we are looking for
+    current = current->forward[0];
+
+    bool equal = !comp(value, current->value) && !comp(current->value, value);
+    return current && equal;
 }
 
 // Clear the whole skiplist of its nodes and reset the header's pointers
@@ -53,7 +67,7 @@ template <typename T, typename Compare>
 void SkipList<T, Compare>::clear() {
     Node* current = _header->forward[0];
 
-    // delete all nodes by traverding lvl 0
+    // delete all nodes by traversing lvl 0
     while (current != nullptr) {
         Node* next = current->forward[0];
         delete current;
