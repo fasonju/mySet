@@ -7,7 +7,7 @@ add_executable(benchmark ${SOURCES})
 
 # Link the libraries to the executable
 target_link_libraries(benchmark PRIVATE
-  tree
+  container
 )
 
 target_include_directories(benchmark PRIVATE
