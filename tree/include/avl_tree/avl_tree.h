@@ -16,6 +16,15 @@ template <typename T, typename Compare = std::less<T>> class AVLTree {
             : value(std::move(value)), left(nullptr), right(nullptr) {}
     };
 
+    struct NodeDeleter {
+        void operator()(Node *ptr) const {
+            if (ptr) {
+                // Instead of `delete ptr`, return memory to your pool allocator
+                poolDeallocate(ptr);
+            }
+        }
+    };
+
   public:
     AVLTree() : head(nullptr) {};
     AVLTree(const AVLTree &) = delete;
