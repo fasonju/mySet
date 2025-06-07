@@ -2,13 +2,15 @@
 
 #include "skiplist.h"
 
+constexpr float LEVEL_UP_CHANCE = 0.5;
+
 // Insert a value into the skiplist
 // return true if successfully inserted, false otherwise
 template <typename T, typename Compare>
 bool SkipList<T, Compare>::insert(T value) {
     // to keep track of pointers from nodes to update
-    std::vector<Node*> update(_maxLevel, nullptr);
-    Node* current = _header;
+    std::vector<Node *> update(_maxLevel, nullptr);
+    Node *current = _header;
 
     // start at highest express lane, go down a level when next node is
     // higher than node we are looking for
@@ -38,7 +40,7 @@ bool SkipList<T, Compare>::insert(T value) {
         _currentLevel = nodeLevel;
     }
 
-    Node* newNode = createNode(value, nodeLevel);
+    Node *newNode = createNode(value, nodeLevel);
 
     for (int i = 0; i < nodeLevel; ++i) {
         // set outgoing pointers to next point in lane
@@ -55,9 +57,9 @@ bool SkipList<T, Compare>::insert(T value) {
 // Remove a value from the skiplist
 // return true if successfully removed, false otherwise
 template <typename T, typename Compare>
-bool SkipList<T, Compare>::remove(const T& value) {
-    std::vector<Node*> update(_maxLevel, nullptr);
-    Node* current = _header;
+bool SkipList<T, Compare>::remove(const T &value) {
+    std::vector<Node *> update(_maxLevel, nullptr);
+    Node *current = _header;
 
     // start at highest express lane, go down a level when next node is
     // higher than node we are looking for
@@ -71,7 +73,8 @@ bool SkipList<T, Compare>::remove(const T& value) {
     current = current->forward[0];
 
     // if value doesnt exist, return false
-    if (!current || comp(value, current->value) || comp(current->value, value)) {
+    if ((current == nullptr) || comp(value, current->value) ||
+        comp(current->value, value)) {
         return false;
     }
 
@@ -87,8 +90,10 @@ bool SkipList<T, Compare>::remove(const T& value) {
     delete current;
     --_size;
 
-    // update current level if necessary (deleted a node of the highest express lane)
-    while (_currentLevel > 1 && _header->forward[_currentLevel - 1] == nullptr) {
+    // update current level if necessary (deleted a node of the highest express
+    // lane)
+    while (_currentLevel > 1 &&
+           _header->forward[_currentLevel - 1] == nullptr) {
         --_currentLevel;
     }
 
@@ -98,8 +103,8 @@ bool SkipList<T, Compare>::remove(const T& value) {
 // Search the skiplist for a value
 // return the node if the value exists, else return a nullpointer
 template <typename T, typename Compare>
-T* SkipList<T, Compare>::search(const T& value) const {
-    Node* current = _header;
+T *SkipList<T, Compare>::search(const T &value) const {
+    Node *current = _header;
 
     // start at highest express lane, go down a level when next node is
     // higher than node we are looking for
@@ -124,9 +129,8 @@ T* SkipList<T, Compare>::search(const T& value) const {
 // go all the way to the lowest layer of skiplist,
 // then run through until you reach a node that has no pointers out
 // return value of last node
-template <typename T, typename Compare>
-T* SkipList<T, Compare>::max() const {
-    Node* x = _header;
+template <typename T, typename Compare> T *SkipList<T, Compare>::max() const {
+    Node *x = _header;
     // Traverse as far as possible on level 0
     while (x->forward[0] != nullptr) {
         x = x->forward[0];
@@ -137,17 +141,16 @@ T* SkipList<T, Compare>::max() const {
 }
 
 // return the element after the dummy header
-template <typename T, typename Compare>
-T* SkipList<T, Compare>::min() const {
-    Node* x = _header->forward[0];
+template <typename T, typename Compare> T *SkipList<T, Compare>::min() const {
+    Node *x = _header->forward[0];
     return x ? &x->value : nullptr;
 }
 
 // Look if a value exists in the skiplist
 // return true if it exists, else return false
 template <typename T, typename Compare>
-bool SkipList<T, Compare>::contains(const T& value) const {
-    Node* current = _header;
+bool SkipList<T, Compare>::contains(const T &value) const {
+    Node *current = _header;
 
     // start at highest express lane, go down a level when next node is
     // higher than node we are looking for
@@ -166,19 +169,18 @@ bool SkipList<T, Compare>::contains(const T& value) const {
 }
 
 // Clear the whole skiplist of its nodes and reset the headers' pointers
-template <typename T, typename Compare>
-void SkipList<T, Compare>::clear() {
-    Node* current = _header->forward[0];
+template <typename T, typename Compare> void SkipList<T, Compare>::clear() {
+    Node *current = _header->forward[0];
 
     // delete all nodes by traversing lvl 0
     while (current != nullptr) {
-        Node* next = current->forward[0];
+        Node *next = current->forward[0];
         delete current;
         current = next;
     }
 
     // reset header pointers
-    for (auto& ptr : _header->forward) {
+    for (auto &ptr : _header->forward) {
         ptr = nullptr;
     }
 
@@ -203,13 +205,15 @@ size_t SkipList<T, Compare>::size() const {
 template <typename T, typename Compare>
 int SkipList<T, Compare>::randomLevel() {
     int level = 1;
-    while (_dist(_gen) < 0.5 && level < _maxLevel)
+    while (_dist(_gen) < LEVEL_UP_CHANCE && level < _maxLevel) {
         ++level;
+    }
     return level;
 }
 
 // create a node with a value and its level (how many express lanes it covers)
 template <typename T, typename Compare>
-typename SkipList<T, Compare>::Node* SkipList<T, Compare>::createNode(const T& value, int level) {
+typename SkipList<T, Compare>::Node *
+SkipList<T, Compare>::createNode(const T &value, int level) {
     return new Node(value, level);
 }
