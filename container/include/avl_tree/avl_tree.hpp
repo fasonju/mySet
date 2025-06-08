@@ -93,24 +93,41 @@ bool AVLTree<T, Compare, Allocator>::remove(Node *&node, const T &value) {
         }
 
         if (!node->left) {
+            Node *temp = node->right;
             std::allocator_traits<NodeAllocator>::destroy(allocator, node);
             allocator.deallocate(node, 1);
-            node = node->right;
+            node = temp;
         } else if (!node->right) {
+
+            Node *temp = node->left;
             std::allocator_traits<NodeAllocator>::destroy(allocator, node);
             allocator.deallocate(node, 1);
-            node = node->left;
+            node = temp;
         } else {
-            Node *inorderSuccessor = minNode(node->right);
-            inorderSuccessor->left = node->left;
-            inorderSuccessor->right = node->right;
+            Node *successorParent = node;
+            Node *successor = node->right;
 
-            // remove pointer to inorderSuccessor
-            remove(inorderSuccessor->right, inorderSuccessor->value);
+            // Find in-order successor and its parent
+            while (successor->left != nullptr) {
+                successorParent = successor;
+                successor = successor->left;
+            }
 
+            // Unlink the successor from its current location
+            if (successorParent != node) {
+                successorParent->left = successor->right;
+                successor->right = node->right;
+            }
+
+            // Transfer left child
+            successor->left = node->left;
+
+            // Delete current node
             std::allocator_traits<NodeAllocator>::destroy(allocator, node);
             allocator.deallocate(node, 1);
-            node = inorderSuccessor;
+
+            // Replace with successor
+            node = successor;
         }
     }
 
