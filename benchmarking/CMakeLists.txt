@@ -11,5 +11,5 @@ target_link_libraries(benchmark PRIVATE
 )
 
 target_include_directories(benchmark PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/internal/
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/
 )

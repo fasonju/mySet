@@ -1,5 +1,6 @@
 // NOLINTBEGIN
 #include "avl_tree/avl_tree.h"
+#include <cmath>
 #include <gtest/gtest.h>
 
 TEST(AvlTree, Initalization) {
@@ -254,4 +255,86 @@ TEST(AvlTree, HeightTracking) {
     EXPECT_EQ(tree.height(), 3);
 }
 
+TEST(AvlTree, BulkInsertionsBalancedHeight) {
+    AVLTree<int> tree;
+    const int count = 1000;
+
+    for (int i = 0; i < count; ++i)
+        tree.insert(i);
+
+    EXPECT_EQ(tree.size(), count);
+    EXPECT_LE(tree.height(), static_cast<int>(1.45 * std::log2(count)));
+}
+
+TEST(AvlTree, DuplicateRemovalShouldFail) {
+    AVLTree<int> tree;
+    tree.insert(5);
+    EXPECT_FALSE(tree.remove(6)); // Key doesn't exist
+    EXPECT_TRUE(tree.contains(5));
+    EXPECT_EQ(tree.size(), 1u);
+}
+
+TEST(AvlTree, ClearAfterBulkInsertions) {
+    AVLTree<int> tree;
+    for (int i = 0; i < 100; ++i)
+        tree.insert(i);
+
+    tree.clear();
+
+    EXPECT_EQ(tree.size(), 0);
+    EXPECT_EQ(tree.height(), 0);
+    EXPECT_TRUE(tree.empty());
+    EXPECT_EQ(tree.min(), nullptr);
+    EXPECT_EQ(tree.max(), nullptr);
+}
+
+TEST(AvlTree, AlternatingInsertDelete) {
+    AVLTree<int> tree;
+
+    for (int i = 0; i < 100; ++i) {
+        tree.insert(i);
+        if (i % 2 == 0)
+            tree.remove(i);
+    }
+
+    for (int i = 0; i < 100; ++i) {
+        if (i % 2 == 0)
+            EXPECT_FALSE(tree.contains(i));
+        else
+            EXPECT_TRUE(tree.contains(i));
+    }
+
+    EXPECT_EQ(tree.size(), 50u);
+}
+
+TEST(AvlTree, InorderIterationCorrectness) {
+    AVLTree<int> tree;
+    std::vector<int> values = {10, 5, 15, 3, 8, 12, 18};
+    for (int val : values)
+        tree.insert(val);
+
+    std::vector<int> result;
+    for (auto it = tree.begin(); it != tree.end(); ++it)
+        result.push_back(*it);
+
+    std::sort(values.begin(), values.end());
+    EXPECT_EQ(result, values);
+}
+
+TEST(AvlTree, ReinsertionAfterDeletion) {
+    AVLTree<int> tree;
+    tree.insert(42);
+    EXPECT_TRUE(tree.remove(42));
+    EXPECT_TRUE(tree.insert(42));
+    EXPECT_TRUE(tree.contains(42));
+}
+
+TEST(AvlTree, MinMaxAfterSkewedInsertion) {
+    AVLTree<int> tree;
+    for (int i = 100; i >= 1; --i)
+        tree.insert(i);
+
+    EXPECT_EQ(*tree.min(), 1);
+    EXPECT_EQ(*tree.max(), 100);
+}
 // NOLINTEND
