@@ -104,30 +104,7 @@ bool AVLTree<T, Compare, Allocator>::remove(Node *&node, const T &value) {
             allocator.deallocate(node, 1);
             node = temp;
         } else {
-            Node *successorParent = node;
-            Node *successor = node->right;
-
-            // Find in-order successor and its parent
-            while (successor->left != nullptr) {
-                successorParent = successor;
-                successor = successor->left;
-            }
-
-            // Unlink the successor from its current location
-            if (successorParent != node) {
-                successorParent->left = successor->right;
-                successor->right = node->right;
-            }
-
-            // Transfer left child
-            successor->left = node->left;
-
-            // Delete current node
-            std::allocator_traits<NodeAllocator>::destroy(allocator, node);
-            allocator.deallocate(node, 1);
-
-            // Replace with successor
-            node = successor;
+            removeNode(node);
         }
     }
 
@@ -152,6 +129,34 @@ bool AVLTree<T, Compare, Allocator>::remove(Node *&node, const T &value) {
     }
 
     return true;
+}
+
+template <typename T, typename Compare, typename Allocator>
+bool AVLTree<T, Compare, Allocator>::removeNode(Node *&node) {
+    Node *successorParent = node;
+    Node *successor = node->right;
+
+    // Find in-order successor and its parent
+    while (successor->left != nullptr) {
+        successorParent = successor;
+        successor = successor->left;
+    }
+
+    // Unlink the successor from its current location
+    if (successorParent != node) {
+        successorParent->left = successor->right;
+        successor->right = node->right;
+    }
+
+    // Transfer left child
+    successor->left = node->left;
+
+    // Delete current node
+    std::allocator_traits<NodeAllocator>::destroy(allocator, node);
+    allocator.deallocate(node, 1);
+
+    // Replace with successor
+    node = successor;
 }
 
 template <typename T, typename Compare, typename Allocator>

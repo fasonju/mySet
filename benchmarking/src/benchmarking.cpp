@@ -38,15 +38,19 @@ void testInsertsSet(const std::array<T, N> &dataset) {
 } // namespace
 
 int main(int argc, char *argv[]) {
-    if (argc <= 1) {
-        std::exit(1);
+    if (argc < 2) {
+        std::cerr << "Missing argument\n";
+        return 1;
     }
-    std::string arg = argv[1];
+
+    std::vector<std::string> args(argv, argv + argc);
+    const std::string &arg = args.at(1); // Safe and clang-tidy compliant
+
     if (arg == "avl") {
-        std::cout << "AVL" << "\n";
+        std::cout << "AVL\n";
         testInserts<AVLTree<int>>(placeholder);
     } else {
-        std::cout << "Set" << "\n";
+        std::cout << "Set\n";
         testInsertsSet(placeholder);
     }
 }
