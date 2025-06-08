@@ -1,7 +1,6 @@
 #include "avl_tree/avl_tree.h"
 #include "container.h"
-#include "large_uniform.h"
-#include "tiny_uniform.h"
+#include "placeholder.h"
 #include <array>
 #include <iostream>
 #include <set>
@@ -45,9 +44,9 @@ int main(int argc, char *argv[]) {
     std::string arg = argv[1];
     if (arg == "avl") {
         std::cout << "AVL" << "\n";
-        testInserts<AVLTree<int>>(large_uniform);
+        testInserts<AVLTree<int>>(placeholder);
     } else {
         std::cout << "Set" << "\n";
-        testInsertsSet(large_uniform);
+        testInsertsSet(placeholder);
     }
 }
