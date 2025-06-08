@@ -1,18 +1,19 @@
 #pragma once
 
 #include "avl_tree/avl_tree.h"
-#include "log.h"
 #include <algorithm>
 #include <cstddef>
 #include <cstdlib>
 #include <memory>
-#include <stdexcept>
 #include <utility>
 
-template <typename T, typename Compare>
-bool AVLTree<T, Compare>::insert(std::unique_ptr<Node> &node, T &&value) {
-    if (!node) {
-        node = std::make_unique<Node>(std::move(value));
+template <typename T, typename Compare, typename Allocator>
+bool AVLTree<T, Compare, Allocator>::insert(Node *&node, T &&value) {
+    if (node == nullptr) {
+        Node *newNode = allocator.allocate(1);
+        std::allocator_traits<NodeAllocator>::construct(allocator, newNode,
+                                                        std::move(value));
+        node = newNode;
         return true;
     }
 
@@ -63,14 +64,14 @@ bool AVLTree<T, Compare>::insert(std::unique_ptr<Node> &node, T &&value) {
     return true;
 }
 
-template <typename T, typename Compare>
-bool AVLTree<T, Compare>::insert(T value) {
+template <typename T, typename Compare, typename Allocator>
+bool AVLTree<T, Compare, Allocator>::insert(T value) {
     return insert(this->head, std::forward<T>(value));
 }
 
-template <typename T, typename Compare>
-bool AVLTree<T, Compare>::remove(std::unique_ptr<Node> &node, const T &value) {
-    if (!node) {
+template <typename T, typename Compare, typename Allocator>
+bool AVLTree<T, Compare, Allocator>::remove(Node *&node, const T &value) {
+    if (node == nullptr) {
         return false;
     }
 
@@ -85,24 +86,31 @@ bool AVLTree<T, Compare>::remove(std::unique_ptr<Node> &node, const T &value) {
     } else {
         // removal logic
         if (!node->left && !node->right) {
+            std::allocator_traits<NodeAllocator>::destroy(allocator, node);
+            allocator.deallocate(node, 1);
             node = nullptr;
             return true;
         }
 
         if (!node->left) {
-            node = std::move(node->right);
+            std::allocator_traits<NodeAllocator>::destroy(allocator, node);
+            allocator.deallocate(node, 1);
+            node = node->right;
         } else if (!node->right) {
-            node = std::move(node->left);
+            std::allocator_traits<NodeAllocator>::destroy(allocator, node);
+            allocator.deallocate(node, 1);
+            node = node->left;
         } else {
-            std::unique_ptr<Node> &inorderSuccessor = getInOrderSuccessor(node);
-            auto successorValue = inorderSuccessor->value; // Copy
-            std::unique_ptr<Node> newNode =
-                std::make_unique<Node>(std::move(successorValue));
+            Node *inorderSuccessor = minNode(node->right);
+            inorderSuccessor->left = node->left;
+            inorderSuccessor->right = node->right;
 
-            remove(node->right, inorderSuccessor->value);
-            newNode->left = std::move(node->left);
-            newNode->right = std::move(node->right);
-            node = std::move(newNode);
+            // remove pointer to inorderSuccessor
+            remove(inorderSuccessor->right, inorderSuccessor->value);
+
+            std::allocator_traits<NodeAllocator>::destroy(allocator, node);
+            allocator.deallocate(node, 1);
+            node = inorderSuccessor;
         }
     }
 
@@ -129,19 +137,18 @@ bool AVLTree<T, Compare>::remove(std::unique_ptr<Node> &node, const T &value) {
     return true;
 }
 
-template <typename T, typename Compare>
-bool AVLTree<T, Compare>::remove(const T &value) {
+template <typename T, typename Compare, typename Allocator>
+bool AVLTree<T, Compare, Allocator>::remove(const T &value) {
     return remove(this->head, value);
 }
 
-template <typename T, typename Compare>
-T *AVLTree<T, Compare>::search(const T &value) const {
+template <typename T, typename Compare, typename Allocator>
+T *AVLTree<T, Compare, Allocator>::search(const T &value) const {
     return search(this->head, value);
 }
 
-template <typename T, typename Compare>
-T *AVLTree<T, Compare>::search(const std::unique_ptr<Node> &node,
-                               const T &value) const {
+template <typename T, typename Compare, typename Allocator>
+T *AVLTree<T, Compare, Allocator>::search(Node *node, const T &value) const {
     if (node == nullptr) {
         return nullptr;
     }
@@ -156,41 +163,49 @@ T *AVLTree<T, Compare>::search(const std::unique_ptr<Node> &node,
     return search(node->right, value);
 }
 
-template <typename T, typename Compare> T *AVLTree<T, Compare>::max() const {
-    if (!this->head) {
+template <typename T, typename Compare, typename Allocator>
+T *AVLTree<T, Compare, Allocator>::max() const {
+    if (this->head == nullptr) {
         return nullptr;
     }
 
     return max(this->head);
 }
 
-template <typename T, typename Compare>
-T *AVLTree<T, Compare>::max(const std::unique_ptr<Node> &node) const {
+template <typename T, typename Compare, typename Allocator>
+T *AVLTree<T, Compare, Allocator>::max(Node *node) const {
     return node->right ? max(node->right) : &node->value;
 }
 
-template <typename T, typename Compare> T *AVLTree<T, Compare>::min() const {
-    if (!this->head) {
+template <typename T, typename Compare, typename Allocator>
+T *AVLTree<T, Compare, Allocator>::min() const {
+    if (this->head == nullptr) {
         return nullptr;
     }
 
     return min(this->head);
 }
 
-template <typename T, typename Compare>
-T *AVLTree<T, Compare>::min(const std::unique_ptr<Node> &node) const {
-    return node->left ? max(node->left) : &node->value;
+template <typename T, typename Compare, typename Allocator>
+AVLTree<T, Compare, Allocator>::Node *
+AVLTree<T, Compare, Allocator>::minNode(Node *node) const {
+    return node->left ? minNode(node->left) : node;
 }
 
-template <typename T, typename Compare>
-bool AVLTree<T, Compare>::contains(const T &value) const {
+template <typename T, typename Compare, typename Allocator>
+T *AVLTree<T, Compare, Allocator>::min(Node *node) const {
+    return node->left ? min(node->left) : &node->value;
+}
+
+template <typename T, typename Compare, typename Allocator>
+bool AVLTree<T, Compare, Allocator>::contains(const T &value) const {
     return contains(this->head, value);
 }
 
-template <typename T, typename Compare>
-bool AVLTree<T, Compare>::contains(const std::unique_ptr<Node> &node,
-                                   const T &value) const {
-    if (!node) {
+template <typename T, typename Compare, typename Allocator>
+bool AVLTree<T, Compare, Allocator>::contains(Node *node,
+                                              const T &value) const {
+    if (node == nullptr) {
         return false;
     }
 
@@ -205,99 +220,91 @@ bool AVLTree<T, Compare>::contains(const std::unique_ptr<Node> &node,
     return contains(node->right, value);
 }
 
-template <typename T, typename Compare>
-int AVLTree<T, Compare>::height() const {
+template <typename T, typename Compare, typename Allocator>
+int AVLTree<T, Compare, Allocator>::height() const {
     return this->head ? this->head->height : 0;
 }
 
-template <typename T, typename Compare>
-size_t AVLTree<T, Compare>::size() const {
+template <typename T, typename Compare, typename Allocator>
+size_t AVLTree<T, Compare, Allocator>::size() const {
     return size(this->head);
 }
 
-template <typename T, typename Compare>
-size_t AVLTree<T, Compare>::size(const std::unique_ptr<Node> &node) const {
-    if (!node) {
+template <typename T, typename Compare, typename Allocator>
+size_t AVLTree<T, Compare, Allocator>::size(Node *node) const {
+    if (node == nullptr) {
         return 0;
     }
 
     return size(node->left) + size(node->right) + 1;
 }
 
-template <typename T, typename Compare> void AVLTree<T, Compare>::clear() {
+template <typename T, typename Compare, typename Allocator>
+void AVLTree<T, Compare, Allocator>::clear() {
+    clear(this->head);
     this->head = nullptr;
 }
 
-template <typename T, typename Compare>
-bool AVLTree<T, Compare>::empty() const {
-    return !this->head;
+template <typename T, typename Compare, typename Allocator>
+void AVLTree<T, Compare, Allocator>::clear(Node *node) {
+    if (node == nullptr) {
+        return;
+    }
+    clear(node->left);
+    clear(node->right);
+    std::allocator_traits<NodeAllocator>::destroy(allocator, node);
+    allocator.deallocate(node, 1);
 }
 
-template <typename T, typename Compare>
-int AVLTree<T, Compare>::getBalance(const std::unique_ptr<Node> &node) const {
+template <typename T, typename Compare, typename Allocator>
+bool AVLTree<T, Compare, Allocator>::empty() const {
+    return this->head == nullptr;
+}
+
+template <typename T, typename Compare, typename Allocator>
+int AVLTree<T, Compare, Allocator>::getBalance(Node *node) const {
     const int leftHeight = node->left ? node->left->height : 0;
     const int rightHeight = node->right ? node->right->height : 0;
 
     return leftHeight - rightHeight;
 }
 
-template <typename T, typename Compare>
-void AVLTree<T, Compare>::leftRotate(std::unique_ptr<Node> &node) {
-    if (!node || !node->right) {
+template <typename T, typename Compare, typename Allocator>
+void AVLTree<T, Compare, Allocator>::leftRotate(Node *&node) {
+    if (node == nullptr || node->right == nullptr) {
         return;
     }
 
-    std::unique_ptr<Node> newRoot = std::move(node->right);
+    Node *newRoot = node->right;
     // Move the left subtree of newRoot into the right subtree of root
-    node->right = std::move(newRoot->left);
+    node->right = newRoot->left;
     // Make the old root the left child of newRoot
-    newRoot->left = std::move(node);
-    node = std::move(newRoot);
+    newRoot->left = node;
+    node = newRoot;
     updateHeight(node->left);
     updateHeight(node);
 }
 
-template <typename T, typename Compare>
-void AVLTree<T, Compare>::rightRotate(std::unique_ptr<Node> &node) {
-    if (!node || !node->left) {
+template <typename T, typename Compare, typename Allocator>
+void AVLTree<T, Compare, Allocator>::rightRotate(Node *&node) {
+    if (node == nullptr || node->left == nullptr) {
         return;
     }
 
     // Take ownership of the left child
-    std::unique_ptr<Node> newRoot = std::move(node->left);
+    Node *newRoot = node->left;
     // Move the right subtree of newRoot into the left subtree of node
-    node->left = std::move(newRoot->right);
+    node->left = newRoot->right;
     // Make the old root the right child of newRoot
-    newRoot->right = std::move(node);
+    newRoot->right = node;
     // Update node to point to new root
-    node = std::move(newRoot);
+    node = newRoot;
     updateHeight(node->right);
     updateHeight(node);
 }
 
-/**
- * Assumes right subtree exists
- */
-template <typename T, typename Compare>
-std::unique_ptr<typename AVLTree<T, Compare>::Node> &
-AVLTree<T, Compare>::getInOrderSuccessor(
-    const std::unique_ptr<Node> &node) const {
-    if (!node || !node->right) {
-        LOG_ERROR("invalid argument");
-        throw std::invalid_argument(
-            "developer fault, inorderSuccessor must have right child");
-    }
-
-    auto *current = const_cast<std::unique_ptr<Node> *>(&node->right);
-    while ((*current)->left) {
-        current = &(*current)->left;
-    }
-
-    return *current;
-}
-
-template <typename T, typename Compare>
-void AVLTree<T, Compare>::updateHeight(std::unique_ptr<Node> &node) {
+template <typename T, typename Compare, typename Allocator>
+void AVLTree<T, Compare, Allocator>::updateHeight(Node *&node) {
     const bool leftExists = node->left != nullptr;
     const bool rightExists = node->right != nullptr;
 
@@ -306,12 +313,14 @@ void AVLTree<T, Compare>::updateHeight(std::unique_ptr<Node> &node) {
     node->height = std::max(leftHeight, rightHeight) + 1;
 }
 
-template <typename T, typename Compare>
-AVLTree<T, Compare>::Iterator AVLTree<T, Compare>::begin() const {
-    return Iterator(head.get());
+template <typename T, typename Compare, typename Allocator>
+AVLTree<T, Compare, Allocator>::Iterator
+AVLTree<T, Compare, Allocator>::begin() const {
+    return Iterator(this->head);
 }
 
-template <typename T, typename Compare>
-AVLTree<T, Compare>::Iterator AVLTree<T, Compare>::end() const {
+template <typename T, typename Compare, typename Allocator>
+AVLTree<T, Compare, Allocator>::Iterator
+AVLTree<T, Compare, Allocator>::end() const {
     return Iterator();
 }

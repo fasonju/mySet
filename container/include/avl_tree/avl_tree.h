@@ -4,17 +4,22 @@
 #include <memory>
 #include <stack>
 
-template <typename T, typename Compare = std::less<T>> class AVLTree {
+template <typename T, typename Compare = std::less<T>,
+          typename Allocator = std::allocator<T>>
+class AVLTree {
   private:
     struct Node {
         T value;
         int height = 1;
-        std::unique_ptr<Node> left;
-        std::unique_ptr<Node> right;
+        Node *left;
+        Node *right;
 
         explicit Node(T &&value)
             : value(std::move(value)), left(nullptr), right(nullptr) {}
     };
+
+    using NodeAllocator =
+        typename std::allocator_traits<Allocator>::template rebind_alloc<Node>;
 
   public:
     AVLTree() : head(nullptr) {};
@@ -110,29 +115,28 @@ template <typename T, typename Compare = std::less<T>> class AVLTree {
     [[nodiscard]] bool empty() const;
 
   private:
-    std::unique_ptr<Node> head;
+    Node *head;
 
     // modifiers
-    bool insert(std::unique_ptr<Node> &node, T &&value);
-    bool remove(std::unique_ptr<Node> &node, const T &value);
-    void leftRotate(std::unique_ptr<Node> &node);
-    void rightRotate(std::unique_ptr<Node> &node);
-    void updateHeight(std::unique_ptr<Node> &node);
+    bool insert(Node *&node, T &&value);
+    bool remove(Node *&node, const T &value);
+    void clear(Node *node);
+    void leftRotate(Node *&node);
+    void rightRotate(Node *&node);
+    void updateHeight(Node *&node);
 
     // access
-    [[nodiscard]] T *search(const std::unique_ptr<Node> &Node,
-                            const T &value) const;
-    [[nodiscard]] T *max(const std::unique_ptr<Node> &node) const;
-    [[nodiscard]] T *min(const std::unique_ptr<Node> &node) const;
-    [[nodiscard]] bool contains(const std::unique_ptr<Node> &node,
-                                const T &value) const;
-    [[nodiscard]] std::unique_ptr<Node> &
-    getInOrderSuccessor(const std::unique_ptr<Node> &node) const;
+    [[nodiscard]] T *search(Node *node, const T &value) const;
+    [[nodiscard]] T *max(Node *node) const;
+    [[nodiscard]] T *min(Node *node) const;
+    [[nodiscard]] Node *minNode(Node *node) const;
+    [[nodiscard]] bool contains(Node *node, const T &value) const;
 
     // info
-    [[nodiscard]] size_t size(const std::unique_ptr<Node> &node) const;
-    [[nodiscard]] int getBalance(const std::unique_ptr<Node> &node) const;
+    [[nodiscard]] size_t size(Node *node) const;
+    [[nodiscard]] int getBalance(Node *node) const;
     Compare comp;
+    NodeAllocator allocator;
 };
 
 #include "avl_tree/avl_tree.hpp"
