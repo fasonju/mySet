@@ -264,5 +264,14 @@ $RECYCLE.BIN/
 
 .cache
 build
+benchmarking/include/large_reverse.h
+benchmarking/include/large_sorted.h
+benchmarking/include/large_uniform.h
+benchmarking/include/medium_reverse.h
+benchmarking/include/medium_uniform.h
+benchmarking/include/medium_sorted.h
+benchmarking/include/tiny_uniform.h
+benchmarking/include/tiny_sorted.h
+benchmarking/include/tiny_reverse.h
 
 # End of https://www.toptal.com/developers/gitignore/api/clion,cmake,c++,linux,windows,macos,vim
