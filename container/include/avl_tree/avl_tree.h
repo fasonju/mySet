@@ -69,17 +69,17 @@ class AVLTree {
      * Copies the value into the tree and inserts it. Returns false if the value
      * already existed in the tree.
      */
-    inline bool insert(T value) noexcept;
+    bool insert(T value) noexcept;
     /**
      * Removes and equivalent value from the tree, returns false if the value
      * does not exist in the tree.
      */
-    inline bool remove(const T &value) noexcept;
+    bool remove(const T &value) noexcept;
 
     /**
      * Clear the tree.
      */
-    void clear();
+    void clear() noexcept;
     // access
 
     /**
@@ -87,32 +87,32 @@ class AVLTree {
      *
      * returns nullptr if not found
      */
-    [[nodiscard]] T *search(const T &value) const;
+    [[nodiscard]] T *search(const T &value) const noexcept;
     /**
      * Returns the max value in the tree, returns nullptr if the tree is empty.
      */
 
-    [[nodiscard]] T *max() const;
+    [[nodiscard]] T *max() const noexcept;
     /**
      * Returns the min value in the tree, returns nullptr if the tree is empty.
      */
-    [[nodiscard]] T *min() const;
+    [[nodiscard]] T *min() const noexcept;
     // Check if the tree contains a specific value
-    [[nodiscard]] bool contains(const T &value) const;
+    [[nodiscard]] bool contains(const T &value) const noexcept;
 
     // info
     /**
      * Get the height of the tree.
      */
-    [[nodiscard]] int height() const;
+    [[nodiscard]] int height() const noexcept;
     /**
      * Returns the size of the tree
      */
-    [[nodiscard]] size_t size() const;
+    [[nodiscard]] size_t size() const noexcept;
     /**
      * Returns true if the tree is empty
      */
-    [[nodiscard]] bool empty() const;
+    [[nodiscard]] bool empty() const noexcept;
 
   private:
     Node *head;
@@ -124,22 +124,22 @@ class AVLTree {
      * Remove a node, modify the pointer to point at one of their children or if
      * they have two children perform rotations.
      */
-    void removeNode(Node *&node);
-    void clear(Node *node);
-    void leftRotate(Node *&node);
-    void rightRotate(Node *&node);
-    void updateHeight(Node *&node);
+    void removeNode(Node *&node) noexcept;
+    void clear(Node *node) noexcept;
+    void leftRotate(Node *&node) noexcept;
+    void rightRotate(Node *&node) noexcept;
+    void updateHeight(Node *&node) noexcept;
 
     // access
-    [[nodiscard]] T *search(Node *node, const T &value) const;
-    [[nodiscard]] T *max(Node *node) const;
-    [[nodiscard]] T *min(Node *node) const;
-    [[nodiscard]] Node *minNode(Node *node) const;
-    [[nodiscard]] bool contains(Node *node, const T &value) const;
+    [[nodiscard]] T *search(Node *node, const T &value) const noexcept;
+    [[nodiscard]] T *max(Node *node) const noexcept;
+    [[nodiscard]] T *min(Node *node) const noexcept;
+    [[nodiscard]] Node *minNode(Node *node) const noexcept;
+    [[nodiscard]] bool contains(Node *node, const T &value) const noexcept;
 
     // info
-    [[nodiscard]] size_t size(Node *node) const;
-    [[nodiscard]] int getBalance(Node *node) const;
+    [[nodiscard]] size_t size(Node *node) const noexcept;
+    [[nodiscard]] int getBalance(Node *node) const noexcept;
     Compare comp;
     NodeAllocator allocator;
 };

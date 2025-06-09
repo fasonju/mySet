@@ -134,7 +134,7 @@ bool AVLTree<T, Compare, Allocator>::remove(Node *&node,
 }
 
 template <typename T, typename Compare, typename Allocator>
-void AVLTree<T, Compare, Allocator>::removeNode(Node *&node) {
+void AVLTree<T, Compare, Allocator>::removeNode(Node *&node) noexcept {
     Node *successorParent = node;
     Node *successor = node->right;
 
@@ -167,12 +167,13 @@ bool AVLTree<T, Compare, Allocator>::remove(const T &value) noexcept {
 }
 
 template <typename T, typename Compare, typename Allocator>
-T *AVLTree<T, Compare, Allocator>::search(const T &value) const {
+T *AVLTree<T, Compare, Allocator>::search(const T &value) const noexcept {
     return search(this->head, value);
 }
 
 template <typename T, typename Compare, typename Allocator>
-T *AVLTree<T, Compare, Allocator>::search(Node *node, const T &value) const {
+T *AVLTree<T, Compare, Allocator>::search(Node *node,
+                                          const T &value) const noexcept {
     if (node == nullptr) {
         return nullptr;
     }
@@ -188,7 +189,7 @@ T *AVLTree<T, Compare, Allocator>::search(Node *node, const T &value) const {
 }
 
 template <typename T, typename Compare, typename Allocator>
-T *AVLTree<T, Compare, Allocator>::max() const {
+T *AVLTree<T, Compare, Allocator>::max() const noexcept {
     if (this->head == nullptr) {
         return nullptr;
     }
@@ -197,12 +198,12 @@ T *AVLTree<T, Compare, Allocator>::max() const {
 }
 
 template <typename T, typename Compare, typename Allocator>
-T *AVLTree<T, Compare, Allocator>::max(Node *node) const {
+T *AVLTree<T, Compare, Allocator>::max(Node *node) const noexcept {
     return node->right ? max(node->right) : &node->value;
 }
 
 template <typename T, typename Compare, typename Allocator>
-T *AVLTree<T, Compare, Allocator>::min() const {
+T *AVLTree<T, Compare, Allocator>::min() const noexcept {
     if (this->head == nullptr) {
         return nullptr;
     }
@@ -212,23 +213,23 @@ T *AVLTree<T, Compare, Allocator>::min() const {
 
 template <typename T, typename Compare, typename Allocator>
 AVLTree<T, Compare, Allocator>::Node *
-AVLTree<T, Compare, Allocator>::minNode(Node *node) const {
+AVLTree<T, Compare, Allocator>::minNode(Node *node) const noexcept {
     return node->left ? minNode(node->left) : node;
 }
 
 template <typename T, typename Compare, typename Allocator>
-T *AVLTree<T, Compare, Allocator>::min(Node *node) const {
+T *AVLTree<T, Compare, Allocator>::min(Node *node) const noexcept {
     return node->left ? min(node->left) : &node->value;
 }
 
 template <typename T, typename Compare, typename Allocator>
-bool AVLTree<T, Compare, Allocator>::contains(const T &value) const {
+bool AVLTree<T, Compare, Allocator>::contains(const T &value) const noexcept {
     return contains(this->head, value);
 }
 
 template <typename T, typename Compare, typename Allocator>
 bool AVLTree<T, Compare, Allocator>::contains(Node *node,
-                                              const T &value) const {
+                                              const T &value) const noexcept {
     if (node == nullptr) {
         return false;
     }
@@ -245,17 +246,17 @@ bool AVLTree<T, Compare, Allocator>::contains(Node *node,
 }
 
 template <typename T, typename Compare, typename Allocator>
-int AVLTree<T, Compare, Allocator>::height() const {
+int AVLTree<T, Compare, Allocator>::height() const noexcept {
     return this->head ? this->head->height : 0;
 }
 
 template <typename T, typename Compare, typename Allocator>
-size_t AVLTree<T, Compare, Allocator>::size() const {
+size_t AVLTree<T, Compare, Allocator>::size() const noexcept {
     return size(this->head);
 }
 
 template <typename T, typename Compare, typename Allocator>
-size_t AVLTree<T, Compare, Allocator>::size(Node *node) const {
+size_t AVLTree<T, Compare, Allocator>::size(Node *node) const noexcept {
     if (node == nullptr) {
         return 0;
     }
@@ -264,13 +265,13 @@ size_t AVLTree<T, Compare, Allocator>::size(Node *node) const {
 }
 
 template <typename T, typename Compare, typename Allocator>
-void AVLTree<T, Compare, Allocator>::clear() {
+void AVLTree<T, Compare, Allocator>::clear() noexcept {
     clear(this->head);
     this->head = nullptr;
 }
 
 template <typename T, typename Compare, typename Allocator>
-void AVLTree<T, Compare, Allocator>::clear(Node *node) {
+void AVLTree<T, Compare, Allocator>::clear(Node *node) noexcept {
     if (node == nullptr) {
         return;
     }
@@ -281,12 +282,12 @@ void AVLTree<T, Compare, Allocator>::clear(Node *node) {
 }
 
 template <typename T, typename Compare, typename Allocator>
-bool AVLTree<T, Compare, Allocator>::empty() const {
+bool AVLTree<T, Compare, Allocator>::empty() const noexcept {
     return this->head == nullptr;
 }
 
 template <typename T, typename Compare, typename Allocator>
-int AVLTree<T, Compare, Allocator>::getBalance(Node *node) const {
+int AVLTree<T, Compare, Allocator>::getBalance(Node *node) const noexcept {
     const int leftHeight = node->left ? node->left->height : 0;
     const int rightHeight = node->right ? node->right->height : 0;
 
@@ -294,7 +295,7 @@ int AVLTree<T, Compare, Allocator>::getBalance(Node *node) const {
 }
 
 template <typename T, typename Compare, typename Allocator>
-void AVLTree<T, Compare, Allocator>::leftRotate(Node *&node) {
+void AVLTree<T, Compare, Allocator>::leftRotate(Node *&node) noexcept {
     if (node == nullptr || node->right == nullptr) {
         return;
     }
@@ -310,7 +311,7 @@ void AVLTree<T, Compare, Allocator>::leftRotate(Node *&node) {
 }
 
 template <typename T, typename Compare, typename Allocator>
-void AVLTree<T, Compare, Allocator>::rightRotate(Node *&node) {
+void AVLTree<T, Compare, Allocator>::rightRotate(Node *&node) noexcept {
     if (node == nullptr || node->left == nullptr) {
         return;
     }
@@ -328,7 +329,7 @@ void AVLTree<T, Compare, Allocator>::rightRotate(Node *&node) {
 }
 
 template <typename T, typename Compare, typename Allocator>
-void AVLTree<T, Compare, Allocator>::updateHeight(Node *&node) {
+void AVLTree<T, Compare, Allocator>::updateHeight(Node *&node) noexcept {
     const bool leftExists = node->left != nullptr;
     const bool rightExists = node->right != nullptr;
 
