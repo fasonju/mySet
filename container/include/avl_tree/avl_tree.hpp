@@ -132,7 +132,7 @@ bool AVLTree<T, Compare, Allocator>::remove(Node *&node, const T &value) {
 }
 
 template <typename T, typename Compare, typename Allocator>
-bool AVLTree<T, Compare, Allocator>::removeNode(Node *&node) {
+void AVLTree<T, Compare, Allocator>::removeNode(Node *&node) {
     Node *successorParent = node;
     Node *successor = node->right;
 

@@ -124,7 +124,7 @@ class AVLTree {
      * Remove a node, modify the pointer to point at one of their children or if
      * they have two children perform rotations.
      */
-    bool removeNode(Node *&node);
+    void removeNode(Node *&node);
     void clear(Node *node);
     void leftRotate(Node *&node);
     void rightRotate(Node *&node);
