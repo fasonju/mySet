@@ -1,11 +1,15 @@
 #include "avl_tree/avl_tree.h"
 #include "container.h"
-#include "placeholder.h"
+#include "dataset/medium_reverse.h"
+#include "dataset/medium_sorted.h"
+#include "dataset/medium_uniform.h"
 
 #include <array>
 #include <chrono>
+#include <cstring> // for strcmp
 #include <iostream>
 #include <set>
+#include <string>
 
 namespace {
 template <typename C, typename T, size_t N>
@@ -66,18 +70,23 @@ double testInsertSearchRemoveSet(const std::array<T, N> &dataset) {
 }
 
 template <typename T, size_t N>
-void runFullTest(const std::array<T, N> &dataset,
-                 const std::string &datasetName) {
+void runFullTestMode(const std::array<T, N> &dataset,
+                     const std::string &datasetName, const std::string &mode) {
     std::cout << "Dataset: " << datasetName << "\n";
 
-    double avlTime = testInsertSearchRemove<AVLTree<T>>(dataset);
-    std::cout << "AVLTree insert+search+remove time: " << avlTime << " ms\n";
+    if (mode == "avl") {
+        double avlTime = testInsertSearchRemove<AVLTree<T>>(dataset);
+        std::cout << "AVLTree insert+search+remove time: " << avlTime
+                  << " ms\n";
+    } else if (mode == "set") {
+        double setTime = testInsertSearchRemoveSet(dataset);
+        std::cout << "std::set insert+search+erase time: " << setTime
+                  << " ms\n";
+    } else {
+        std::cerr << "Unknown mode '" << mode << "'. Use 'avl' or 'set'.\n";
+    }
 
-    double setTime = testInsertSearchRemoveSet(dataset);
-    std::cout << "std::set insert+search+erase time: " << setTime << " ms\n";
-
-    double percentDiff = 100.0 * (avlTime - setTime) / setTime;
-    std::cout << "Difference (AVL vs std::set): " << percentDiff << "%\n\n";
+    std::cout << "\n";
 }
 
 template <typename C, typename T, size_t N>
@@ -132,36 +141,49 @@ double testInsertHeavySearchLightSet(const std::array<T, N> &dataset,
 }
 
 template <typename T, size_t N>
-void runAVLStrongSearchTest(const std::array<T, N> &dataset,
-                            size_t searchRepeats,
-                            const std::string &datasetName) {
+void runStrongSearchTestMode(const std::array<T, N> &dataset,
+                             size_t searchRepeats,
+                             const std::string &datasetName,
+                             const std::string &mode) {
     std::cout << "Dataset: " << datasetName << " (search repeated "
               << searchRepeats << "x)\n";
 
-    double avlTime =
-        testInsertHeavySearchLight<AVLTree<T>>(dataset, searchRepeats);
-    std::cout << "AVLTree insert + repeated search time: " << avlTime
-              << " ms\n";
+    if (mode == "avl") {
+        double avlTime =
+            testInsertHeavySearchLight<AVLTree<T>>(dataset, searchRepeats);
+        std::cout << "AVLTree insert + repeated search time: " << avlTime
+                  << " ms\n";
+    } else if (mode == "set") {
+        double setTime = testInsertHeavySearchLightSet(dataset, searchRepeats);
+        std::cout << "std::set insert + repeated search time: " << setTime
+                  << " ms\n";
+    } else {
+        std::cerr << "Unknown mode '" << mode << "'. Use 'avl' or 'set'.\n";
+    }
 
-    double setTime = testInsertHeavySearchLightSet(dataset, searchRepeats);
-    std::cout << "std::set insert + repeated search time: " << setTime
-              << " ms\n";
-
-    double percentDiff = 100.0 * (avlTime - setTime) / setTime;
-    std::cout << "Difference (AVL vs std::set): " << percentDiff << "%\n\n";
+    std::cout << "\n";
 }
 
 } // namespace
 
-int main() {
-    runFullTest(placeholder, "Uniform Random");
-    runFullTest(placeholder, "Sorted");
-    runFullTest(placeholder, "Reverse");
+int main(int argc, char *argv[]) {
+    if (argc < 2) {
+        std::cerr << "Usage: " << argv[0] << " <mode>\n";
+        std::cerr << "mode: 'avl' or 'set'\n";
+        return 1;
+    }
+
+    std::string mode = argv[1];
+
+    runFullTestMode(MEDIUM_UNIFORM, "Uniform Random", mode);
+    runFullTestMode(MEDIUM_SORTED, "Sorted", mode);
+    runFullTestMode(MEDIUM_REVERSE, "Reverse", mode);
 
     constexpr size_t searchRepeats = 100;
-    runAVLStrongSearchTest(placeholder, searchRepeats, "Uniform Random");
-    runAVLStrongSearchTest(placeholder, searchRepeats, "Sorted");
-    runAVLStrongSearchTest(placeholder, searchRepeats, "Reverse");
+    runStrongSearchTestMode(MEDIUM_UNIFORM, searchRepeats, "Uniform Random",
+                            mode);
+    runStrongSearchTestMode(MEDIUM_SORTED, searchRepeats, "Sorted", mode);
+    runStrongSearchTestMode(MEDIUM_REVERSE, searchRepeats, "Reverse", mode);
 
     return 0;
 }
