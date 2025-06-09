@@ -10,7 +10,7 @@ template <typename T, typename Compare = std::less<T>> class SkipList {
   public:
     // this one (or the maxLevel) even necessary?
     explicit SkipList(int maxLevel = DEFAULT_MAX_LEVEL)
-        : _maxLevel(maxLevel) {}; // completely arbitrary value,
+        : _maxLevel(maxLevel) {Node *x = new Node(0); _header = x;}; // completely arbitrary value,
                                   // log(1,000,000) =~ 20
 
     SkipList(const SkipList &) = delete;
@@ -35,6 +35,7 @@ template <typename T, typename Compare = std::less<T>> class SkipList {
         std::vector<Node *> forward;
 
         Node(const T &val, int level) : value(val), forward(level, nullptr) {}
+        explicit Node(int level) : forward(level, nullptr) {}
     };
 
     int randomLevel();

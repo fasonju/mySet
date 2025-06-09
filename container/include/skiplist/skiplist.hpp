@@ -25,7 +25,7 @@ bool SkipList<T, Compare>::insert(T value) {
 
     // if node with value already exists, dont insert
     bool equal = !comp(value, current->value) && !comp(current->value, value);
-    if (current && equal) {
+    if (current != nullptr && equal) {
         return false;
     }
 
