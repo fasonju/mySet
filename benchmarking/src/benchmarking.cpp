@@ -1,8 +1,6 @@
 #include "avl_tree/avl_tree.h"
 #include "container.h"
-#include "dataset/medium_reverse.h" // renamed from large_reversed
-#include "dataset/medium_sorted.h"
-#include "dataset/medium_uniform.h"
+#include "placeholder.h"
 
 #include <array>
 #include <chrono>
@@ -156,14 +154,14 @@ void runAVLStrongSearchTest(const std::array<T, N> &dataset,
 } // namespace
 
 int main() {
-    runFullTest(MEDIUM_UNIFORM, "Uniform Random");
-    runFullTest(MEDIUM_SORTED, "Sorted");
-    runFullTest(MEDIUM_REVERSE, "Reverse");
+    runFullTest(placeholder, "Uniform Random");
+    runFullTest(placeholder, "Sorted");
+    runFullTest(placeholder, "Reverse");
 
     constexpr size_t searchRepeats = 100;
-    runAVLStrongSearchTest(MEDIUM_UNIFORM, searchRepeats, "Uniform Random");
-    runAVLStrongSearchTest(MEDIUM_SORTED, searchRepeats, "Sorted");
-    runAVLStrongSearchTest(MEDIUM_REVERSE, searchRepeats, "Reverse");
+    runAVLStrongSearchTest(placeholder, searchRepeats, "Uniform Random");
+    runAVLStrongSearchTest(placeholder, searchRepeats, "Sorted");
+    runAVLStrongSearchTest(placeholder, searchRepeats, "Reverse");
 
     return 0;
 }
