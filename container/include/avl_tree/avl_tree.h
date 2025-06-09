@@ -69,12 +69,12 @@ class AVLTree {
      * Copies the value into the tree and inserts it. Returns false if the value
      * already existed in the tree.
      */
-    bool insert(T value);
+    inline bool insert(T value) noexcept;
     /**
      * Removes and equivalent value from the tree, returns false if the value
      * does not exist in the tree.
      */
-    bool remove(const T &value);
+    inline bool remove(const T &value) noexcept;
 
     /**
      * Clear the tree.
@@ -118,8 +118,8 @@ class AVLTree {
     Node *head;
 
     // modifiers
-    bool insert(Node *&node, T &&value);
-    bool remove(Node *&node, const T &value);
+    bool insert(Node *&node, T &&value) noexcept;
+    bool remove(Node *&node, const T &value) noexcept;
     /**
      * Remove a node, modify the pointer to point at one of their children or if
      * they have two children perform rotations.

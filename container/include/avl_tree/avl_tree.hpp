@@ -8,7 +8,7 @@
 #include <utility>
 
 template <typename T, typename Compare, typename Allocator>
-bool AVLTree<T, Compare, Allocator>::insert(Node *&node, T &&value) {
+bool AVLTree<T, Compare, Allocator>::insert(Node *&node, T &&value) noexcept {
     if (node == nullptr) {
         Node *newNode = allocator.allocate(1);
         std::allocator_traits<NodeAllocator>::construct(allocator, newNode,
@@ -22,9 +22,6 @@ bool AVLTree<T, Compare, Allocator>::insert(Node *&node, T &&value) {
     }
 
     const bool valueBigger = comp(node->value, value);
-    const bool subTreeRight =
-        (valueBigger && node->right && comp(node->right->value, value) ||
-         (!valueBigger && node->left && comp(node->left->value, value)));
 
     if (valueBigger) {
         if (!insert(node->right, std::forward<T>(value))) {
@@ -40,6 +37,10 @@ bool AVLTree<T, Compare, Allocator>::insert(Node *&node, T &&value) {
     updateHeight(node);
 
     int balance = getBalance(node);
+
+    const bool subTreeRight =
+        ((valueBigger && node->right && comp(node->right->value, value)) ||
+         (!valueBigger && node->left && comp(node->left->value, value)));
 
     // Left side
     if (balance > 1 && !subTreeRight) {
@@ -65,12 +66,13 @@ bool AVLTree<T, Compare, Allocator>::insert(Node *&node, T &&value) {
 }
 
 template <typename T, typename Compare, typename Allocator>
-bool AVLTree<T, Compare, Allocator>::insert(T value) {
+bool AVLTree<T, Compare, Allocator>::insert(T value) noexcept {
     return insert(this->head, std::forward<T>(value));
 }
 
 template <typename T, typename Compare, typename Allocator>
-bool AVLTree<T, Compare, Allocator>::remove(Node *&node, const T &value) {
+bool AVLTree<T, Compare, Allocator>::remove(Node *&node,
+                                            const T &value) noexcept {
     if (node == nullptr) {
         return false;
     }
@@ -160,7 +162,7 @@ void AVLTree<T, Compare, Allocator>::removeNode(Node *&node) {
 }
 
 template <typename T, typename Compare, typename Allocator>
-bool AVLTree<T, Compare, Allocator>::remove(const T &value) {
+bool AVLTree<T, Compare, Allocator>::remove(const T &value) noexcept {
     return remove(this->head, value);
 }
 

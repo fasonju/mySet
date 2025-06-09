@@ -17,8 +17,6 @@ void testInserts(const std::array<T, N> &dataset) {
     for (auto &datapoint : dataset) {
         container.remove(datapoint);
     }
-
-    std::cout << container.size() << "\n";
 }
 
 template <typename T, size_t N>
@@ -31,8 +29,6 @@ void testInsertsSet(const std::array<T, N> &dataset) {
     for (auto &datapoint : dataset) {
         set.erase(datapoint);
     }
-
-    std::cout << set.size() << "\n";
 }
 
 } // namespace
@@ -46,6 +42,7 @@ int main(int argc, char *argv[]) {
     std::vector<std::string> args(argv, argv + argc);
     const std::string &arg = args.at(1); // Safe and clang-tidy compliant
 
+    auto start = std::chrono::high_resolution_clock::now();
     if (arg == "avl") {
         std::cout << "AVL\n";
         testInserts<AVLTree<int>>(LARGE_UNIFORM);
@@ -53,4 +50,9 @@ int main(int argc, char *argv[]) {
         std::cout << "Set\n";
         testInsertsSet(LARGE_UNIFORM);
     }
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> duration_ms = end - start;
+
+    std::cout << "Time taken: " << duration_ms.count() << " ms" << std::endl;
+    return 0;
 }
