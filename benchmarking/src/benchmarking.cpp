@@ -12,6 +12,71 @@
 namespace {
 template <typename C, typename T, size_t N>
     requires Dontainer<C, T>
+double testInsert(const std::array<T, N> &dataset) {
+    C container;
+
+    auto start = std::chrono::high_resolution_clock::now();
+
+    // Insert all elements
+    for (auto &datapoint : dataset) {
+        container.insert(datapoint);
+    }
+
+    auto end = std::chrono::high_resolution_clock::now();
+
+    std::chrono::duration<double, std::milli> duration_ms = end - start;
+    return duration_ms.count();
+}
+
+template <typename C, typename T, size_t N>
+    requires Dontainer<C, T>
+double testSearch(const std::array<T, N> &dataset) {
+    C container;
+
+    // Insert elements before timer
+    for (auto &datapoint : dataset) {
+        container.insert(datapoint);
+    }
+
+    auto start = std::chrono::high_resolution_clock::now();
+
+    // Search all elements
+    for (auto &datapoint : dataset) {
+        volatile bool found = container.contains(datapoint);
+        (void)found; // prevent optimization
+    }
+
+    auto end = std::chrono::high_resolution_clock::now();
+
+    std::chrono::duration<double, std::milli> duration_ms = end - start;
+    return duration_ms.count();
+}
+
+template <typename C, typename T, size_t N>
+    requires Dontainer<C, T>
+double testRemove(const std::array<T, N> &dataset) {
+    C container;
+
+    // Insert elements before timer
+    for (auto &datapoint : dataset) {
+        container.insert(datapoint);
+    }
+
+    auto start = std::chrono::high_resolution_clock::now();
+
+    // Remove all elements
+    for (auto &datapoint : dataset) {
+        container.remove(datapoint);
+    }
+
+    auto end = std::chrono::high_resolution_clock::now();
+
+    std::chrono::duration<double, std::milli> duration_ms = end - start;
+    return duration_ms.count();
+}
+
+template <typename C, typename T, size_t N>
+    requires Dontainer<C, T>
 double testInsertSearchRemove(const std::array<T, N> &dataset) {
     C container;
 
@@ -31,6 +96,68 @@ double testInsertSearchRemove(const std::array<T, N> &dataset) {
     // Remove all elements
     for (auto &datapoint : dataset) {
         container.remove(datapoint);
+    }
+
+    auto end = std::chrono::high_resolution_clock::now();
+
+    std::chrono::duration<double, std::milli> duration_ms = end - start;
+    return duration_ms.count();
+}
+
+template <typename T, size_t N>
+double testInsertSet(const std::array<T, N> &dataset) {
+    std::set<T> container;
+
+    auto start = std::chrono::high_resolution_clock::now();
+
+    // Insert all elements
+    for (auto &datapoint : dataset) {
+        container.insert(datapoint);
+    }
+
+    auto end = std::chrono::high_resolution_clock::now();
+
+    std::chrono::duration<double, std::milli> duration_ms = end - start;
+    return duration_ms.count();
+}
+
+template <typename T, size_t N>
+double testSearchSet(const std::array<T, N> &dataset) {
+    std::set<T> container;
+
+    // Insert elements before timer
+    for (auto &datapoint : dataset) {
+        container.insert(datapoint);
+    }
+
+    auto start = std::chrono::high_resolution_clock::now();
+
+    // Search all elements
+    for (auto &datapoint : dataset) {
+        volatile bool found = container.find(datapoint) != container.end();
+        (void)found;
+    }
+
+    auto end = std::chrono::high_resolution_clock::now();
+
+    std::chrono::duration<double, std::milli> duration_ms = end - start;
+    return duration_ms.count();
+}
+
+template <typename T, size_t N>
+double testRemoveSet(const std::array<T, N> &dataset) {
+    std::set<T> container;
+
+    // Insert elements before timer
+    for (auto &datapoint : dataset) {
+        container.insert(datapoint);
+    }
+
+    auto start = std::chrono::high_resolution_clock::now();
+
+    // Remove all elements
+    for (auto &datapoint : dataset) {
+        container.erase(datapoint);
     }
 
     auto end = std::chrono::high_resolution_clock::now();
