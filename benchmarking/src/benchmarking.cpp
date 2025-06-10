@@ -1,8 +1,6 @@
 #include "avl_tree/avl_tree.h"
 #include "container.h"
-#include "dataset/medium_reverse.h"
-#include "dataset/medium_sorted.h"
-#include "dataset/medium_uniform.h"
+#include "placeholder.h"
 
 #include <array>
 #include <chrono>
@@ -175,15 +173,15 @@ int main(int argc, char *argv[]) {
 
     std::string mode = argv[1];
 
-    runFullTestMode(MEDIUM_UNIFORM, "Uniform Random", mode);
-    runFullTestMode(MEDIUM_SORTED, "Sorted", mode);
-    runFullTestMode(MEDIUM_REVERSE, "Reverse", mode);
+    runFullTestMode(placeholder, "Uniform Random", mode);
+    runFullTestMode(placeholder, "Sorted", mode);
+    runFullTestMode(placeholder, "Reverse", mode);
 
     constexpr size_t searchRepeats = 100;
-    runStrongSearchTestMode(MEDIUM_UNIFORM, searchRepeats, "Uniform Random",
+    runStrongSearchTestMode(placeholder, searchRepeats, "Uniform Random",
                             mode);
-    runStrongSearchTestMode(MEDIUM_SORTED, searchRepeats, "Sorted", mode);
-    runStrongSearchTestMode(MEDIUM_REVERSE, searchRepeats, "Reverse", mode);
+    runStrongSearchTestMode(placeholder, searchRepeats, "Sorted", mode);
+    runStrongSearchTestMode(placeholder, searchRepeats, "Reverse", mode);
 
     return 0;
 }
