@@ -51,12 +51,13 @@ int main(int argc, char *argv[]) {
         std::cerr << "mode: 'avl' or 'set'\n";
         return 1;
     }
-
     std::string mode = argv[1];
 
     if (mode == "avl") {
-        testInsert<AVLTree<int>>(placeholder);
+        double duration = testInsert<AVLTree<int>>(placeholder);
+        std::cout << duration << "\n";
     } else {
-        testInsertSet(placeholder);
+        double duration = testInsertSet(placeholder);
+        std::cout << duration << "\n";
     }
 }
