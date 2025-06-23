@@ -201,27 +201,21 @@ void runFullTestMode(const std::array<T, N> &dataset,
 
     if (mode == "avl") {
         double avlInsertTime = testInsert<AVLTree<T>>(dataset);
-        std::cout << "AVLTree insert time: " << avlInsertTime
-                  << " ms\n";
+        std::cout << "AVLTree insert time: " << avlInsertTime << " ms\n";
         double avlSearchTime = testSearch<AVLTree<T>>(dataset);
-        std::cout << "AVLTree search time: " << avlSearchTime
-                  << " ms\n";
+        std::cout << "AVLTree search time: " << avlSearchTime << " ms\n";
         double avlEraseTime = testRemove<AVLTree<T>>(dataset);
-        std::cout << "AVLTree remove time: " << avlEraseTime
-                  << " ms\n";
+        std::cout << "AVLTree remove time: " << avlEraseTime << " ms\n";
         double avlTime = testInsertSearchRemove<AVLTree<T>>(dataset);
         std::cout << "AVLTree insert+search+remove time: " << avlTime
                   << " ms\n";
     } else if (mode == "set") {
         double setInsertTime = testInsertSet(dataset);
-        std::cout << "std::set insert time: " << setInsertTime
-                  << " ms\n";
+        std::cout << "std::set insert time: " << setInsertTime << " ms\n";
         double setSearchTime = testSearchSet(dataset);
-        std::cout << "std::set search time: " << setSearchTime
-                  << " ms\n";
+        std::cout << "std::set search time: " << setSearchTime << " ms\n";
         double setEraseTime = testRemoveSet(dataset);
-        std::cout << "std::set erase time: " << setEraseTime
-                  << " ms\n";
+        std::cout << "std::set erase time: " << setEraseTime << " ms\n";
         double setTime = testInsertSearchRemoveSet(dataset);
         std::cout << "std::set insert+search+erase time: " << setTime
                   << " ms\n";
@@ -323,8 +317,7 @@ int main(int argc, char *argv[]) {
     runFullTestMode(placeholder, "Reverse", mode);
 
     constexpr size_t searchRepeats = 100;
-    runStrongSearchTestMode(placeholder, searchRepeats, "Uniform Random",
-                            mode);
+    runStrongSearchTestMode(placeholder, searchRepeats, "Uniform Random", mode);
     runStrongSearchTestMode(placeholder, searchRepeats, "Sorted", mode);
     runStrongSearchTestMode(placeholder, searchRepeats, "Reverse", mode);
 

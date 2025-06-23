@@ -17,8 +17,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # Set output directories
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
+add_subdirectory(dataset)
 add_subdirectory(container)
 add_subdirectory(benchmarking)
+add_subdirectory(benchmark_insert)
 
 enable_testing()
 
