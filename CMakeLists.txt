@@ -21,6 +21,7 @@ add_subdirectory(dataset)
 add_subdirectory(container)
 add_subdirectory(benchmarking)
 add_subdirectory(benchmark_insert)
+add_subdirectory(benchmark_iteration)
 
 enable_testing()
 
