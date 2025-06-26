@@ -23,6 +23,7 @@ add_subdirectory(benchmarking)
 add_subdirectory(benchmark_insert)
 add_subdirectory(benchmark_iteration)
 add_subdirectory(benchmark_search)
+add_subdirectory(benchmark_remove)
 
 enable_testing()
 

@@ -31,7 +31,7 @@ constexpr std::unique_ptr<C> makeContainer(const std::array<T, N> &dataset) {
 
 template <typename C, typename T, size_t N>
     requires Dontainer<C, T>
-double benchmarkSearch(const std::array<T, N> &dataset) {
+double benchmarkRemove(const std::array<T, N> &dataset) {
     auto srcContainer = makeContainer<C>(dataset);
     C destContainer;
 
@@ -42,10 +42,9 @@ double benchmarkSearch(const std::array<T, N> &dataset) {
 
     auto start = std::chrono::high_resolution_clock::now();
 
-    // Search all elements
+    // Remove all elements
     for (auto &datapoint : *srcContainer) {
-        volatile bool found = destContainer.contains(datapoint);
-        (void)found; // prevent optimization
+        destContainer.remove(datapoint);
     }
 
     auto end = std::chrono::high_resolution_clock::now();
@@ -55,7 +54,7 @@ double benchmarkSearch(const std::array<T, N> &dataset) {
 }
 
 template <typename T, size_t N>
-double benchmarkSearchSet(const std::array<T, N> &dataset) {
+double benchmarkRemoveSet(const std::array<T, N> &dataset) {
     auto srcContainer = makeContainer<std::set<T>>(dataset);
     std::set<T> destContainer;
 
@@ -66,10 +65,9 @@ double benchmarkSearchSet(const std::array<T, N> &dataset) {
 
     auto start = std::chrono::high_resolution_clock::now();
 
-    // Search all elements
+    // Remove all elements
     for (auto &datapoint : *srcContainer) {
-        volatile bool found = destContainer.find(datapoint) != destContainer.end();
-        (void)found;
+        destContainer.erase(datapoint);
     }
 
     auto end = std::chrono::high_resolution_clock::now();
@@ -96,77 +94,77 @@ int main(int argc, char *argv[]) {
     if (modeStr == "avl") {
         if (variation == "random") {
             if (datasetStr == "tiny") {
-                duration = benchmarkSearch<AVLTree<int>>(placeholder);
+                duration = benchmarkRemove<AVLTree<int>>(placeholder);
             }
 
             if (datasetStr == "medium") {
-                duration = benchmarkSearch<AVLTree<int>>(placeholder);
+                duration = benchmarkRemove<AVLTree<int>>(placeholder);
             }
 
             if (datasetStr == "large") {
-                duration = benchmarkSearch<AVLTree<int>>(placeholder);
+                duration = benchmarkRemove<AVLTree<int>>(placeholder);
             }
         } else if (variation == "sorted") {
             if (datasetStr == "tiny") {
-                duration = benchmarkSearch<AVLTree<int>>(placeholder);
+                duration = benchmarkRemove<AVLTree<int>>(placeholder);
             }
 
             if (datasetStr == "medium") {
-                duration = benchmarkSearch<AVLTree<int>>(placeholder);
+                duration = benchmarkRemove<AVLTree<int>>(placeholder);
             }
 
             if (datasetStr == "large") {
-                duration = benchmarkSearch<AVLTree<int>>(placeholder);
+                duration = benchmarkRemove<AVLTree<int>>(placeholder);
             }
         } else {
             if (datasetStr == "tiny") {
-                duration = benchmarkSearch<AVLTree<int>>(placeholder);
+                duration = benchmarkRemove<AVLTree<int>>(placeholder);
             }
 
             if (datasetStr == "medium") {
-                duration = benchmarkSearch<AVLTree<int>>(placeholder);
+                duration = benchmarkRemove<AVLTree<int>>(placeholder);
             }
 
             if (datasetStr == "large") {
-                duration = benchmarkSearch<AVLTree<int>>(placeholder);
+                duration = benchmarkRemove<AVLTree<int>>(placeholder);
             }
         }
     } else {
         if (variation == "random") {
             if (datasetStr == "tiny") {
-                duration = benchmarkSearchSet<>(placeholder);
+                duration = benchmarkRemoveSet<>(placeholder);
             }
 
             if (datasetStr == "medium") {
-                duration = benchmarkSearchSet<>(placeholder);
+                duration = benchmarkRemoveSet<>(placeholder);
             }
 
             if (datasetStr == "large") {
-                duration = benchmarkSearchSet<>(placeholder);
+                duration = benchmarkRemoveSet<>(placeholder);
             }
         } else if (variation == "sorted") {
             if (datasetStr == "tiny") {
-                duration = benchmarkSearchSet<>(placeholder);
+                duration = benchmarkRemoveSet<>(placeholder);
             }
 
             if (datasetStr == "medium") {
-                duration = benchmarkSearchSet<>(placeholder);
+                duration = benchmarkRemoveSet<>(placeholder);
             }
 
             if (datasetStr == "large") {
-                duration = benchmarkSearchSet<>(placeholder);
+                duration = benchmarkRemoveSet<>(placeholder);
             }
         } else {
             if (datasetStr == "tiny") {
-                duration = benchmarkSearchSet<>(placeholder);
+                duration = benchmarkRemoveSet<>(placeholder);
             }
 
             if (datasetStr == "medium") {
-                duration = benchmarkSearchSet<>(placeholder);
+                duration = benchmarkRemoveSet<>(placeholder);
             }
 
             if (datasetStr == "large") {
-                duration = benchmarkSearchSet<>(placeholder);
+                duration = benchmarkRemoveSet<>(placeholder);
             }
         }
     }
