@@ -1,5 +1,15 @@
 #include "avl_tree/avl_tree.h"
+// #include "dataset/large_reverse.h"
+// #include "dataset/large_sorted.h"
+// #include "dataset/large_uniform.h"
+// #include "dataset/medium_reverse.h"
+// #include "dataset/medium_sorted.h"
+// #include "dataset/medium_uniform.h"
+// #include "dataset/tiny_reverse.h"
+// #include "dataset/tiny_sorted.h"
+// #include "dataset/tiny_uniform.h"
 #include "container.h"
+
 #include "placeholder.h"
 
 #include <array>
@@ -10,15 +20,26 @@
 
 namespace {
 template <typename C, typename T, size_t N>
+constexpr std::unique_ptr<C> makeContainer(const std::array<T, N> &dataset) {
+    std::unique_ptr<C> container = std::make_unique<C>();
+
+    for (auto &datapoint : dataset) {
+        container->insert(datapoint);
+    }
+    return container;
+}
+
+template <typename C, typename T, size_t N>
     requires Dontainer<C, T>
-double testInsert(const std::array<T, N> &dataset) {
-    C container;
+double benchmarkInsert(const std::array<T, N> &dataset) {
+    auto srcContainer = makeContainer<C>(dataset);
+    C destContainer;
 
     auto start = std::chrono::high_resolution_clock::now();
 
     // Insert all elements
-    for (auto &datapoint : dataset) {
-        container.insert(datapoint);
+    for (auto &datapoint : *srcContainer) {
+        destContainer.insert(datapoint);
     }
 
     auto end = std::chrono::high_resolution_clock::now();
@@ -28,14 +49,15 @@ double testInsert(const std::array<T, N> &dataset) {
 }
 
 template <typename T, size_t N>
-double testInsertSet(const std::array<T, N> &dataset) {
-    std::set<T> container;
+double benchmarkInsertSet(const std::array<T, N> &dataset) {
+    auto srcContainer = makeContainer<std::set<T>>(dataset);
+    std::set<T> destContainer;
 
     auto start = std::chrono::high_resolution_clock::now();
 
     // Insert all elements
-    for (auto &datapoint : dataset) {
-        container.insert(datapoint);
+    for (auto &datapoint : *srcContainer) {
+        destContainer.insert(datapoint);
     }
 
     auto end = std::chrono::high_resolution_clock::now();
@@ -46,18 +68,95 @@ double testInsertSet(const std::array<T, N> &dataset) {
 } // namespace
 
 int main(int argc, char *argv[]) {
-    if (argc < 2) {
-        std::cerr << "Usage: " << argv[0] << " <mode>\n";
+    if (argc < 4) {
+        std::cerr << "Usage: " << argv[0] << " <mode> <dataset> <variation>\n";
         std::cerr << "mode: 'avl' or 'set'\n";
+        std::cerr << "dataset: tiny medium or large";
+        std::cerr << "variation: sorted reverse random";
+
         return 1;
     }
-    std::string mode = argv[1];
+    std::string modeStr = argv[1];
+    std::string datasetStr = argv[2];
+    std::string variation = argv[3];
 
-    if (mode == "avl") {
-        double duration = testInsert<AVLTree<int>>(placeholder);
-        std::cout << duration << "\n";
+    double duration = 0;
+    if (modeStr == "avl") {
+        if (variation == "random") {
+            if (datasetStr == "tiny") {
+                duration = benchmarkInsert<AVLTree<int>>(placeholder);
+            }
+
+            if (datasetStr == "medium") {
+                duration = benchmarkInsert<AVLTree<int>>(placeholder);
+            }
+
+            if (datasetStr == "large") {
+                duration = benchmarkInsert<AVLTree<int>>(placeholder);
+            }
+        } else if (variation == "sorted") {
+            if (datasetStr == "tiny") {
+                duration = benchmarkInsert<AVLTree<int>>(placeholder);
+            }
+
+            if (datasetStr == "medium") {
+                duration = benchmarkInsert<AVLTree<int>>(placeholder);
+            }
+
+            if (datasetStr == "large") {
+                duration = benchmarkInsert<AVLTree<int>>(placeholder);
+            }
+        } else {
+            if (datasetStr == "tiny") {
+                duration = benchmarkInsert<AVLTree<int>>(placeholder);
+            }
+
+            if (datasetStr == "medium") {
+                duration = benchmarkInsert<AVLTree<int>>(placeholder);
+            }
+
+            if (datasetStr == "large") {
+                duration = benchmarkInsert<AVLTree<int>>(placeholder);
+            }
+        }
     } else {
-        double duration = testInsertSet(placeholder);
-        std::cout << duration << "\n";
+        if (variation == "random") {
+            if (datasetStr == "tiny") {
+                duration = benchmarkInsertSet<>(placeholder);
+            }
+
+            if (datasetStr == "medium") {
+                duration = benchmarkInsertSet<>(placeholder);
+            }
+
+            if (datasetStr == "large") {
+                duration = benchmarkInsertSet<>(placeholder);
+            }
+        } else if (variation == "sorted") {
+            if (datasetStr == "tiny") {
+                duration = benchmarkInsertSet<>(placeholder);
+            }
+
+            if (datasetStr == "medium") {
+                duration = benchmarkInsertSet<>(placeholder);
+            }
+
+            if (datasetStr == "large") {
+                duration = benchmarkInsertSet<>(placeholder);
+            }
+        } else {
+            if (datasetStr == "tiny") {
+                duration = benchmarkInsertSet<>(placeholder);
+            }
+
+            if (datasetStr == "medium") {
+                duration = benchmarkInsertSet<>(placeholder);
+            }
+
+            if (datasetStr == "large") {
+                duration = benchmarkInsertSet<>(placeholder);
+            }
+        }
     }
+    std::cout << duration << "\n";
 }
