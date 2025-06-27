@@ -1,15 +1,13 @@
 #include "avl_tree/avl_tree.h"
-// #include "dataset/large_reverse.h"
-// #include "dataset/large_sorted.h"
-// #include "dataset/large_uniform.h"
-// #include "dataset/medium_reverse.h"
-// #include "dataset/medium_sorted.h"
-// #include "dataset/medium_uniform.h"
-// #include "dataset/tiny_reverse.h"
-// #include "dataset/tiny_sorted.h"
-// #include "dataset/tiny_uniform.h"
-
-#include "../../dataset/include/placeholder.h"
+#include "dataset/large_reverse.h"
+#include "dataset/large_sorted.h"
+#include "dataset/large_uniform.h"
+#include "dataset/medium_reverse.h"
+#include "dataset/medium_sorted.h"
+#include "dataset/medium_uniform.h"
+#include "dataset/tiny_reverse.h"
+#include "dataset/tiny_sorted.h"
+#include "dataset/tiny_uniform.h"
 
 #include <chrono>
 #include <iostream>
@@ -81,77 +79,77 @@ int main(int argc, char *argv[]) {
     if (modeStr == "avl") {
         if (variation == "random") {
             if (datasetStr == "tiny") {
-                duration = benchmarkIteration<AVLTree<int>>(placeholder);
+                duration = benchmarkIteration<AVLTree<int>>(TINY_UNIFORM);
             }
 
             if (datasetStr == "medium") {
-                duration = benchmarkIteration<AVLTree<int>>(placeholder);
+                duration = benchmarkIteration<AVLTree<int>>(MEDIUM_UNIFORM);
             }
 
             if (datasetStr == "large") {
-                duration = benchmarkIteration<AVLTree<int>>(placeholder);
+                duration = benchmarkIteration<AVLTree<int>>(LARGE_UNIFORM);
             }
         } else if (variation == "sorted") {
             if (datasetStr == "tiny") {
-                duration = benchmarkIteration<AVLTree<int>>(placeholder);
+                duration = benchmarkIteration<AVLTree<int>>(TINY_SORTED);
             }
 
             if (datasetStr == "medium") {
-                duration = benchmarkIteration<AVLTree<int>>(placeholder);
+                duration = benchmarkIteration<AVLTree<int>>(MEDIUM_SORTED);
             }
 
             if (datasetStr == "large") {
-                duration = benchmarkIteration<AVLTree<int>>(placeholder);
+                duration = benchmarkIteration<AVLTree<int>>(LARGE_SORTED);
             }
         } else {
             if (datasetStr == "tiny") {
-                duration = benchmarkIteration<AVLTree<int>>(placeholder);
+                duration = benchmarkIteration<AVLTree<int>>(TINY_REVERSE);
             }
 
             if (datasetStr == "medium") {
-                duration = benchmarkIteration<AVLTree<int>>(placeholder);
+                duration = benchmarkIteration<AVLTree<int>>(MEDIUM_REVERSE);
             }
 
             if (datasetStr == "large") {
-                duration = benchmarkIteration<AVLTree<int>>(placeholder);
+                duration = benchmarkIteration<AVLTree<int>>(LARGE_REVERSE);
             }
         }
     } else {
         if (variation == "random") {
             if (datasetStr == "tiny") {
-                duration = benchmarkIterationSet<>(placeholder);
+                duration = benchmarkIterationSet<>(TINY_UNIFORM);
             }
 
             if (datasetStr == "medium") {
-                duration = benchmarkIterationSet<>(placeholder);
+                duration = benchmarkIterationSet<>(MEDIUM_UNIFORM);
             }
 
             if (datasetStr == "large") {
-                duration = benchmarkIterationSet<>(placeholder);
+                duration = benchmarkIterationSet<>(LARGE_UNIFORM);
             }
         } else if (variation == "sorted") {
             if (datasetStr == "tiny") {
-                duration = benchmarkIterationSet<>(placeholder);
+                duration = benchmarkIterationSet<>(TINY_SORTED);
             }
 
             if (datasetStr == "medium") {
-                duration = benchmarkIterationSet<>(placeholder);
+                duration = benchmarkIterationSet<>(MEDIUM_SORTED);
             }
 
             if (datasetStr == "large") {
-                duration = benchmarkIterationSet<>(placeholder);
+                duration = benchmarkIterationSet<>(LARGE_SORTED);
             }
         } else {
             if (datasetStr == "tiny") {
-                duration = benchmarkIterationSet<>(placeholder);
+                duration = benchmarkIterationSet<>(TINY_REVERSE);
             }
 
             if (datasetStr == "medium") {
-                duration = benchmarkIterationSet<>(placeholder);
+                duration = benchmarkIterationSet<>(MEDIUM_REVERSE);
             }
 
             if (datasetStr == "large") {
-                duration = benchmarkIterationSet<>(placeholder);
+                duration = benchmarkIterationSet<>(LARGE_REVERSE);
             }
         }
     }

@@ -17,6 +17,7 @@
 #include <set>
 
 namespace {
+volatile int sink;
 template <typename C, typename T, size_t N>
 constexpr std::unique_ptr<C> makeSrcContainer(const std::array<T, N> &dataset) {
     std::unique_ptr<C> container = std::make_unique<C>();
@@ -49,6 +50,9 @@ double benchmarkSearch(const std::array<T, N> &dataset) {
     for (auto &datapoint : dataset) {
         T* found = srcContainer->search(datapoint);
         (void)found; // prevent optimization
+        if (found == nullptr) {
+            sink = sink + 1;
+        }
     }
 
     auto end = std::chrono::high_resolution_clock::now();
@@ -69,6 +73,9 @@ double benchmarkSearchSet(const std::array<T, N> &dataset) {
         auto it = srcContainer->find(datapoint);
         volatile bool found = (it != srcContainer->end());
         (void)found;
+        if (!found) {
+            sink = sink + 1;
+        }
     }
 
     auto end = std::chrono::high_resolution_clock::now();

@@ -17,6 +17,7 @@
 #include <set>
 
 namespace {
+volatile int sink;
 // template <typename C, typename T, size_t N>
 // constexpr std::unique_ptr<C> makeContainer(const std::array<T, N> &dataset) {
 //     std::unique_ptr<C> container = std::make_unique<C>();
@@ -37,7 +38,10 @@ double benchmarkInsert(const std::array<T, N> &dataset) {
 
     // Insert all elements
     for (auto &datapoint : dataset) {
-        srcContainer.insert(datapoint);
+        bool inserted = srcContainer.insert(datapoint);
+        if (!inserted) {
+            sink = sink + 1;
+        }
     }
 
     auto end = std::chrono::high_resolution_clock::now();
@@ -55,7 +59,10 @@ double benchmarkInsertSet(const std::array<T, N> &dataset) {
 
     // Insert all elements
     for (auto &datapoint : dataset) {
-        srcContainer.insert(datapoint);
+        auto inserted = srcContainer.insert(datapoint);
+        if (inserted == srcContainer->end()) {
+            sink = sink + 1;
+        }
     }
 
     auto end = std::chrono::high_resolution_clock::now();

@@ -18,6 +18,7 @@
 #include <set>
 
 namespace {
+volatile int sink;
 template <typename C, typename T, size_t N>
 constexpr std::unique_ptr<C> makeSrcContainer(const std::array<T, N> &dataset) {
     std::unique_ptr<C> container = std::make_unique<C>();
@@ -48,7 +49,10 @@ double benchmarkRemove(const std::array<T, N> &dataset) {
 
     // Remove all elements
     for (auto &datapoint : dataset) {
-        srcContainer->remove(datapoint);
+        bool removed = srcContainer->remove(datapoint);
+        if (!removed) {
+            sink = sink + 1;
+        }
     }
 
     auto end = std::chrono::high_resolution_clock::now();
@@ -66,7 +70,11 @@ double benchmarkRemoveSet(const std::array<T, N> &dataset) {
 
     // Remove all elements
     for (auto &datapoint : dataset) {
-        srcContainer->erase(datapoint);
+        auto removed = srcContainer->erase(datapoint);
+
+        if (removed == srcContainer->end()) {
+            sink = sink + 1;
+        }
     }
 
     auto end = std::chrono::high_resolution_clock::now();
