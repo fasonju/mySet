@@ -40,14 +40,21 @@ for binary in "$bin_dir"/*; do
 
                     {
                         echo "======================="
-                        echo "valgrind run: $cmd"
+                        echo "valgrind run (ms_print): $cmd"
                         echo "-----------------------"
+
                         massif_out_file="$massif_dir/${binary_name}_${first}_${second}_${third}.massif.out"
 
-                        valgrind --tool=massif --quiet --massif-out-file="$massif_out_file" "$binary" "$first" "$second" "$third" >"$valgrind_log" 2>&1
+                        # Run massif tool quietly and output to massif_out_file
+                        valgrind --tool=massif --quiet --massif-out-file="$massif_out_file" "$binary" "$first" "$second" "$third" >/dev/null 2>&1
+
+                        # Print massif output in human-readable form to valgrind log
+                        ms_print "$massif_out_file"
+
                         echo "======================="
                         echo
                     } >"$valgrind_log" 2>&1
+
                 done
             done
         done
