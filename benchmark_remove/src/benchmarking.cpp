@@ -72,7 +72,7 @@ double benchmarkRemoveSet(const std::array<T, N> &dataset) {
     for (auto &datapoint : dataset) {
         auto removed = srcContainer->erase(datapoint);
 
-        if (removed == srcContainer->end()) {
+        if (!removed) {
             sink = sink + 1;
         }
     }

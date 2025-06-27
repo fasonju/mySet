@@ -60,7 +60,7 @@ double benchmarkInsertSet(const std::array<T, N> &dataset) {
     // Insert all elements
     for (auto &datapoint : dataset) {
         auto inserted = srcContainer.insert(datapoint);
-        if (inserted == srcContainer->end()) {
+        if (!inserted.second) {
             sink = sink + 1;
         }
     }
