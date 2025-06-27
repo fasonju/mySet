@@ -264,6 +264,6 @@ $RECYCLE.BIN/
 
 .cache
 build
-benchmarking/include/dataset
-
+dataset/include/dataset
+massif_logs
 # End of https://www.toptal.com/developers/gitignore/api/clion,cmake,c++,linux,windows,macos,vim
